@@ -24,7 +24,6 @@ const BottomTabNavigator = () => (
         justifyContent: 'center',
         backgroundColor: '#fff',
         alignItems: 'center',
-        paddingTop: 10,
         paddingHorizontal: 10,
       },
     }}>
@@ -37,6 +36,7 @@ const BottomTabNavigator = () => (
         tabBarActiveBackgroundColor: '#EAFAF2',
         tabBarItemStyle: {
           borderRadius: 10,
+          marginVertical: 6,
         },
         tabBarShowLabel: false,
       }}
@@ -50,6 +50,7 @@ const BottomTabNavigator = () => (
         tabBarActiveBackgroundColor: '#EAFAF2',
         tabBarItemStyle: {
           borderRadius: 10,
+          marginVertical: 6,
         },
         tabBarShowLabel: false,
       }}
@@ -67,6 +68,7 @@ const BottomTabNavigator = () => (
         tabBarActiveBackgroundColor: '#EAFAF2',
         tabBarItemStyle: {
           borderRadius: 10,
+          marginVertical: 6,
         },
         tabBarShowLabel: false,
         tabBarActiveTintColor: ColorStyles.primary,
@@ -79,6 +81,7 @@ const BottomTabNavigator = () => (
         tabBarIcon: () => <UserIcon />,
         tabBarItemStyle: {
           borderRadius: 10,
+          marginVertical: 6,
         },
         tabBarActiveBackgroundColor: '#EAFAF2',
         tabBarActiveTintColor: ColorStyles.primary,

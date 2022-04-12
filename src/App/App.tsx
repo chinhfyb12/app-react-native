@@ -27,13 +27,18 @@ const newColorTheme = {
   },
 };
 const theme = extendTheme({colors: newColorTheme});
+const config = {
+  dependencies: {
+    'linear-gradient': require('react-native-linear-gradient').default,
+  },
+};
 
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
     <Provider store={store}>
-      <NativeBaseProvider theme={theme}>
+      <NativeBaseProvider theme={theme} config={config}>
         <View style={styles.root}>
           <NavigationContainer>
             <Stack.Navigator

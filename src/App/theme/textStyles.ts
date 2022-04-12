@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native';
 import {responsiveFontWidth} from 'Utils/helpers';
 
-const useStyles = StyleSheet.create({
+export const textStyles = StyleSheet.create({
   h1: {
     fontSize: responsiveFontWidth(5.5),
     fontWeight: '500',
@@ -52,5 +52,3 @@ const useStyles = StyleSheet.create({
     color: '#161E54',
   },
 });
-
-export default useStyles;
