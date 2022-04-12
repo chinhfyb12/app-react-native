@@ -1,3 +1,4 @@
 {
-    "signin_screen": "SignInScreen"
+    "signin_screen": "SignInScreen",
+    "home_screen": "HomeScreen"
 }
