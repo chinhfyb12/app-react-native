@@ -1,14 +1,32 @@
 import Background2 from 'App/assets/svg-components/Background2';
+import CartIcon_2 from 'App/assets/svg-components/CartIcon_2';
+import TrashIcon from 'App/assets/svg-components/TrashIcon';
 import ButtonCustom from 'App/components/Button';
 import ItemCart from 'App/components/ItemCart';
+import {ColorStyles} from 'App/theme/colors';
 import {textStyles} from 'App/theme/textStyles';
 import {VStack} from 'native-base';
-import React from 'react';
-import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
-import {widthPercentageToDP} from 'Utils/helpers';
+import React, {useState} from 'react';
+import {
+  Button,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import {Swipeable} from 'react-native-gesture-handler';
+import {heightPercentageToDP, widthPercentageToDP} from 'Utils/helpers';
+
+interface CartData {
+  img_url: string;
+  product_name: string;
+  price: number;
+  quantity: number;
+}
 
 const CartScreen = () => {
-  const tempData = [
+  const tempData: CartData[] = [
     {
       img_url:
         'https://tvmcomics.com.vn/wp-content/uploads/2019/11/anime-girl-ngau.jpg',
@@ -60,6 +78,68 @@ const CartScreen = () => {
     },
   ];
 
+  const [listProducts, setListProducts] = useState<CartData[]>(
+    tempData.map((item: CartData, index: number) => ({
+      key: `${index}`,
+      ...item,
+    })),
+  );
+  let row: Array<any> = [];
+  let prevOpenedRow: any;
+
+  const renderItem = ({item, index}: any, onClick: any) => {
+    const closeRow = (index: any) => {
+      console.log('closerow');
+      if (prevOpenedRow && prevOpenedRow !== row[index]) {
+        prevOpenedRow.close();
+      }
+      prevOpenedRow = row[index];
+    };
+
+    const renderRightActions = (progress: any, dragX: any, onClick: any) => {
+      return (
+        <View
+          style={{
+            margin: 0,
+            justifyContent: 'center',
+            width: 70,
+            backgroundColor: ColorStyles.danger,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: heightPercentageToDP(3),
+            marginLeft: widthPercentageToDP(2),
+            borderRadius: 18,
+          }}>
+          <TrashIcon color={ColorStyles.danger_bold} />
+        </View>
+      );
+    };
+
+    return (
+      <Swipeable
+        renderRightActions={(progress, dragX) =>
+          renderRightActions(progress, dragX, onClick)
+        }
+        onSwipeableOpen={() => closeRow(index)}
+        ref={ref => (row[index] = ref)}>
+        <ItemCart
+          img_url={item.img_url}
+          product_name={item.product_name}
+          price={item.price}
+          quantity={item.quantity}
+        />
+      </Swipeable>
+    );
+  };
+
+  const deleteItem = ({item, index}: any) => {
+    console.log(item, index);
+    let a = listProducts;
+    a.splice(index, 1);
+    setListProducts([...a]);
+  };
+
   return (
     <View style={styles.root}>
       <View style={styles.background}>
@@ -79,12 +159,32 @@ const CartScreen = () => {
             <FlatList
               showsVerticalScrollIndicator={false}
               data={tempData}
-              renderItem={({item}) => <ItemCart {...item} />}
+              renderItem={v =>
+                renderItem(v, () => {
+                  console.log('Pressed', v);
+                  deleteItem(v);
+                })
+              }
               keyExtractor={(_, index) => index.toString()}
             />
           </View>
-          <View>
-            <ButtonCustom title="Đặt hàng" />
+          <View style={{display: 'flex', flexDirection: 'row'}}>
+            <View
+              style={{
+                width: widthPercentageToDP(22),
+                marginRight: widthPercentageToDP(2),
+                display: 'flex',
+                flexDirection: 'row',
+              }}>
+              <ButtonCustom
+                disabled
+                icon={<CartIcon_2 width={20} height={20} />}
+                title="2"
+              />
+            </View>
+            <View style={{flex: 1}}>
+              <ButtonCustom title="Đặt hàng" />
+            </View>
           </View>
         </VStack>
       </SafeAreaView>
