@@ -1,7 +1,7 @@
 import React from 'react';
 import {FC} from 'react';
 import {Input, IInputProps, Icon} from 'native-base';
-import {GestureResponderEvent} from 'react-native';
+import {GestureResponderEvent, View} from 'react-native';
 import {ColorStyles} from 'App/theme/colors';
 
 type TypeInput = 'start-icon' | 'end-icon';
@@ -25,11 +25,29 @@ const InputCustom: FC<IInputCustomProps> = ({
           <Input
             {...props}
             w={{base: '100%'}}
-            InputLeftElement={<Icon onPress={onIconPress} as={icon} ml="2" />}
+            InputLeftElement={
+              <Icon
+                onPress={onIconPress}
+                as={
+                  <View
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      paddingLeft: 14,
+                    }}>
+                    {icon}
+                  </View>
+                }
+              />
+            }
             borderWidth={0}
             backgroundColor={ColorStyles.background_primary}
             borderRadius={14}
+            paddingTop={4}
+            paddingBottom={4}
             placeholder={placeholder}
+            placeholderTextColor="#3FDA84"
           />
         );
       }
@@ -38,11 +56,29 @@ const InputCustom: FC<IInputCustomProps> = ({
           <Input
             {...props}
             w={{base: '100%'}}
-            InputRightElement={<Icon onPress={onIconPress} as={icon} mr="2" />}
+            InputRightElement={
+              <Icon
+                onPress={onIconPress}
+                as={
+                  <View
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      paddingLeft: 14,
+                    }}>
+                    {icon}
+                  </View>
+                }
+              />
+            }
             borderWidth={0}
             backgroundColor={ColorStyles.background_primary}
             borderRadius={14}
+            paddingTop={4}
+            paddingBottom={4}
             placeholder={placeholder}
+            placeholderTextColor="#3FDA84"
           />
         );
       }
@@ -55,6 +91,7 @@ const InputCustom: FC<IInputCustomProps> = ({
             backgroundColor={ColorStyles.background_primary}
             borderRadius={14}
             placeholder={placeholder}
+            placeholderTextColor="#3FDA84"
           />
         );
     }

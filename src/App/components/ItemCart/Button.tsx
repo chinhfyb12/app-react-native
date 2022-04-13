@@ -1,19 +1,13 @@
 import React, {FC} from 'react';
 import {StyleSheet, Text} from 'react-native';
 import {Box, Pressable, IPressableProps} from 'native-base';
+import {widthPercentageToDP} from 'Utils/helpers';
 
 interface IBtnProps extends IPressableProps {
-  title?: string;
-  color?: string;
   icon?: any;
 }
 
-const ButtonCustom: FC<IBtnProps> = ({
-  title,
-  color = '#fff',
-  icon,
-  ...props
-}) => (
+const ButtonCustom: FC<IBtnProps> = ({icon, ...props}) => (
   <Pressable style={styles.root} {...props}>
     {({isPressed}) => (
       <Box
@@ -25,21 +19,20 @@ const ButtonCustom: FC<IBtnProps> = ({
           },
         }}
         style={{
-          borderRadius: 15,
+          borderRadius: 10,
           transform: [
             {
-              scale: isPressed ? 0.95 : 1,
+              scale: isPressed ? 0.94 : 1,
             },
           ],
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
-          paddingVertical: 14,
-          paddingHorizontal: 8,
+          width: widthPercentageToDP(8),
+          height: widthPercentageToDP(8),
         }}>
-        {icon && <Box style={{marginRight: title ? 8 : 0}}>{icon}</Box>}
-        {title && <Text style={{color, fontWeight: '700'}}>{title}</Text>}
+        {icon && <Box>{icon}</Box>}
       </Box>
     )}
   </Pressable>

@@ -8,4 +8,6 @@ export enum ColorStyles {
   success = '#C6F5CE',
   black = '#212B36',
   border_line = 'rgba(241, 243, 244, 1)',
+  background_orange = '#FEF7E8',
+  orange = '#DA6317',
 }

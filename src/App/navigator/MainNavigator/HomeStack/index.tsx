@@ -2,6 +2,7 @@ import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {NameScreen} from 'App/constants';
 import HomeScreen from 'App/navigator/screens/HomeScreen';
+import ListProducts from 'App/navigator/screens/ListProducts';
 
 const Stack = createStackNavigator();
 export const HomeStack = () => (
@@ -13,5 +14,9 @@ export const HomeStack = () => (
     }}
     initialRouteName={NameScreen.home_screen}>
     <Stack.Screen name={NameScreen.home_screen} component={HomeScreen} />
+    <Stack.Screen
+      name={NameScreen.list_products_screen}
+      component={ListProducts}
+    />
   </Stack.Navigator>
 );

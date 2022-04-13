@@ -1,4 +1,7 @@
 {
     "signin_screen": "SignInScreen",
-    "home_screen": "HomeScreen"
+    "home_screen": "HomeScreen",
+    "search_screen": "SearchScreen",
+    "list_products_screen": "ListProductsScreen",
+    "cart_screen": "CartScreen"
 }

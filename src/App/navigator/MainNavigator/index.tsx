@@ -12,6 +12,8 @@ import NotificationIcon from 'App/assets/svg-components/NotificationIcon';
 import {ProfileStack} from './ProfileStack';
 import UserIcon from 'App/assets/svg-components/UserIcon';
 import {responsiveFontWidth} from 'Utils/helpers';
+import {CartStack} from './CartStack';
+import CartIcon from 'App/assets/svg-components/CartIcon';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -56,15 +58,10 @@ const BottomTabNavigator = () => (
       }}
     />
     <Tab.Screen
-      name="Thông báo"
-      component={NotificationStack}
+      name="Giỏ hàng"
+      component={CartStack}
       options={{
-        tabBarIcon: () => <NotificationIcon />,
-        tabBarBadge: 1,
-        tabBarBadgeStyle: {
-          fontSize: responsiveFontWidth(2.5),
-          top: 0,
-        },
+        tabBarIcon: () => <CartIcon />,
         tabBarActiveBackgroundColor: '#EAFAF2',
         tabBarItemStyle: {
           borderRadius: 10,
