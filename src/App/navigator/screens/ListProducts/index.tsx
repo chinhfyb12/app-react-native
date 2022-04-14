@@ -1,3 +1,4 @@
+import {useRoute} from '@react-navigation/native';
 import Background2 from 'App/assets/svg-components/Background2';
 import BackBtn from 'App/components/BackBtn';
 import CardProduct from 'App/components/CardProduct';
@@ -5,13 +6,28 @@ import Filter from 'App/components/Filter';
 import {ColorStyles} from 'App/theme/colors';
 import {textStyles} from 'App/theme/textStyles';
 import {VStack} from 'native-base';
-import React, {FC} from 'react';
+import React, {FC, useEffect} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import {heightPercentageToDP, widthPercentageToDP} from 'Utils/helpers';
+import {getProducts} from 'Utils/stores/products/products.creator';
+import {IAppState} from 'Utils/stores/state';
+import * as _ from 'lodash';
 
 interface IListProductsProps {}
 
 const ListProducts: FC<IListProductsProps> = () => {
+  const route = useRoute<any>();
+  const dispatch = useDispatch();
+
+  const {products} = useSelector((state: IAppState) => state.productsState);
+
+  useEffect(() => {
+    if (route?.params?.category_id) {
+      dispatch(getProducts({parent_id: route.params.category_id}));
+    }
+  }, []);
+
   return (
     <View style={styles.root}>
       <View style={styles.background}>
@@ -45,7 +61,7 @@ const ListProducts: FC<IListProductsProps> = () => {
           <ScrollView showsVerticalScrollIndicator={false}>
             <Text
               style={[textStyles.h2_bold, {marginTop: 5, marginBottom: 15}]}>
-              Thực phẩm đóng hộp
+              {route?.params?.name}
             </Text>
             <View
               style={{
@@ -55,15 +71,19 @@ const ListProducts: FC<IListProductsProps> = () => {
                 justifyContent: 'space-between',
                 paddingBottom: heightPercentageToDP(15),
               }}>
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((_, index: number) => (
-                <CardProduct
-                  key={index}
-                  style={{width: '46%', marginBottom: heightPercentageToDP(3)}}
-                  title="San pham 1"
-                  img_url="https://tvmcomics.com.vn/wp-content/uploads/2019/11/anime-girl-ngau.jpg"
-                  price={190000}
-                />
-              ))}
+              {_.isArray(products?.data) &&
+                products.data.map((product, index: number) => (
+                  <CardProduct
+                    key={index}
+                    style={{
+                      width: '46%',
+                      marginBottom: heightPercentageToDP(3),
+                    }}
+                    title={product.product_name}
+                    img_url={product.img_url}
+                    price={product.sale_price}
+                  />
+                ))}
             </View>
           </ScrollView>
         </VStack>

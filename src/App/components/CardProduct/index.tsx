@@ -15,9 +15,9 @@ import ButtonCustom from '../Button';
 import Paper from '../Paper';
 
 interface ICardProduct {
-  img_url: string;
-  title: string;
-  price: number;
+  img_url?: string;
+  title?: string;
+  price?: number;
   onPress?: (e: GestureResponderEvent) => void;
   style?: StyleProp<ViewStyle>;
 }
@@ -31,15 +31,23 @@ const CardProduct: FC<ICardProduct> = ({
 }) => {
   return (
     <Paper style={style}>
-      <Image
+      <View
         style={{
           width: '100%',
           height: 150,
-        }}
-        source={{
-          uri: img_url,
-        }}
-      />
+          backgroundColor: '#fff',
+        }}>
+        <Image
+          style={{
+            width: '100%',
+            height: 150,
+          }}
+          source={{
+            uri: img_url,
+          }}
+          resizeMode="center"
+        />
+      </View>
       <View style={styles.boxContent}>
         <Text style={textStyles.p_bold}>{title}</Text>
         <View style={styles.boxAction}>

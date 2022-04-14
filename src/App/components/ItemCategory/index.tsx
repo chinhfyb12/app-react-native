@@ -9,16 +9,20 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {heightPercentageToDP, widthPercentageToDP} from 'Utils/helpers';
+import {IProductDto} from 'Utils/stores/products/products.dto';
 import CardProduct from '../CardProduct';
+import * as _ from 'lodash';
 
 interface IItemCategoryProps {
   title: string;
   onViewMore?: (e: GestureResponderEvent) => void;
+  listProducts?: IProductDto[];
 }
 
 const ItemCategory: FC<IItemCategoryProps> = ({
   title,
   onViewMore = () => {},
+  listProducts = [],
 }) => {
   return (
     <Box>
@@ -36,15 +40,16 @@ const ItemCategory: FC<IItemCategoryProps> = ({
       </Box>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <HStack space={6}>
-          {[1, 2, 3, 4, 5].map((_, index: number) => (
-            <CardProduct
-              key={index}
-              style={{width: widthPercentageToDP(45)}}
-              title="San pham 1"
-              img_url="https://tvmcomics.com.vn/wp-content/uploads/2019/11/anime-girl-ngau.jpg"
-              price={190000}
-            />
-          ))}
+          {_.isArray(listProducts) &&
+            listProducts.map((product, index: number) => (
+              <CardProduct
+                key={index}
+                style={{width: widthPercentageToDP(45)}}
+                title={product.product_name}
+                img_url={product.img_url}
+                price={product.sale_price}
+              />
+            ))}
         </HStack>
       </ScrollView>
     </Box>

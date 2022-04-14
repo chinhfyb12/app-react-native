@@ -6,12 +6,23 @@ import {NameScreen} from 'App/constants';
 import {ColorStyles} from 'App/theme/colors';
 import {textStyles} from 'App/theme/textStyles';
 import {Box, ScrollView, VStack} from 'native-base';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import {heightPercentageToDP, widthPercentageToDP} from 'Utils/helpers';
+import {getProductsHome} from 'Utils/stores/products/products.creator';
+import {IAppState} from 'Utils/stores/state';
 
 const HomeScreen = () => {
   const navigation = useNavigation<any>();
+  const dispatch = useDispatch();
+
+  const {productsHome} = useSelector((state: IAppState) => state.productsState);
+
+  useEffect(() => {
+    dispatch(getProductsHome());
+  }, []);
+
   return (
     <View style={styles.root}>
       <View style={styles.background}>
@@ -49,21 +60,33 @@ const HomeScreen = () => {
             </Box>
             <ItemCategory
               onViewMore={() =>
-                navigation.navigate(NameScreen.list_products_screen)
+                navigation.navigate(NameScreen.list_products_screen, {
+                  category_id: '6241ce6bb5f543ad01172c39',
+                  name: 'Đồ dùng cá nhân',
+                })
               }
-              title="Popular Menu"
+              title="Đồ dùng cá nhân"
+              listProducts={productsHome?.products_personal}
             />
             <ItemCategory
               onViewMore={() =>
-                navigation.navigate(NameScreen.list_products_screen)
+                navigation.navigate(NameScreen.list_products_screen, {
+                  category_id: '6241ce51b5f543ad01172c35',
+                  name: 'Thức ăn đóng hộp',
+                })
               }
-              title="Popular Restaurant"
+              title="Thức ăn đóng hộp"
+              listProducts={productsHome?.products_canned_food}
             />
             <ItemCategory
               onViewMore={() =>
-                navigation.navigate(NameScreen.list_products_screen)
+                navigation.navigate(NameScreen.list_products_screen, {
+                  category_id: '6241ce40b5f543ad01172c33',
+                  name: 'Đồ uống',
+                })
               }
-              title="Nearest Restaurant"
+              title="Đồ uống"
+              listProducts={productsHome?.products_cokes}
             />
           </VStack>
         </ScrollView>
