@@ -90,6 +90,8 @@ const InputCustom: FC<IInputCustomProps> = ({
             borderWidth={0}
             backgroundColor={ColorStyles.background_primary}
             borderRadius={14}
+            paddingTop={4}
+            paddingBottom={4}
             placeholder={placeholder}
             placeholderTextColor="#3FDA84"
           />

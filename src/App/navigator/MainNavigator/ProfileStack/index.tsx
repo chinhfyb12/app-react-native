@@ -1,7 +1,7 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {NameScreen} from 'App/constants';
-import HomeScreen from 'App/navigator/screens/HomeScreen';
+import ProfileScreen from 'App/navigator/screens/ProfileScreen';
 
 const Stack = createStackNavigator();
 export const ProfileStack = () => (
@@ -11,7 +11,7 @@ export const ProfileStack = () => (
       headerTitleAlign: 'center',
       headerShown: false,
     }}
-    initialRouteName={NameScreen.home_screen}>
-    <Stack.Screen name={NameScreen.home_screen} component={HomeScreen} />
+    initialRouteName={NameScreen.profile_screen}>
+    <Stack.Screen name={NameScreen.profile_screen} component={ProfileScreen} />
   </Stack.Navigator>
 );

@@ -3,5 +3,6 @@
     "home_screen": "HomeScreen",
     "search_screen": "SearchScreen",
     "list_products_screen": "ListProductsScreen",
-    "cart_screen": "CartScreen"
+    "cart_screen": "CartScreen",
+    "profile_screen": "ProfileScreen"
 }
