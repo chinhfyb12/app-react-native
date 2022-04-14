@@ -2,10 +2,13 @@ import {useNavigation} from '@react-navigation/native';
 import BackIcon from 'App/assets/svg-components/BackIcon';
 import {ColorStyles} from 'App/theme/colors';
 import {Pressable, Box} from 'native-base';
-import React from 'react';
+import React, {FC} from 'react';
 import {widthPercentageToDP} from 'Utils/helpers';
 
-const BackBtn = () => {
+const BackBtn: FC<{color?: string; bg?: string}> = ({
+  color = ColorStyles.primary,
+  bg = ColorStyles.background_primary,
+}) => {
   const navigation = useNavigation();
   return (
     <Pressable onPress={() => navigation.goBack()}>
@@ -22,11 +25,11 @@ const BackBtn = () => {
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: ColorStyles.background_primary,
+            backgroundColor: bg,
             width: widthPercentageToDP(10),
             height: widthPercentageToDP(10),
           }}>
-          <BackIcon color={ColorStyles.primary} />
+          <BackIcon color={color} />
         </Box>
       )}
     </Pressable>

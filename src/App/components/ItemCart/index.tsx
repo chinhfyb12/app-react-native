@@ -1,9 +1,11 @@
+import {useNavigation} from '@react-navigation/native';
 import PlusIcon from 'App/assets/svg-components/PlusIcon';
+import {NameScreen} from 'App/constants';
 import {ColorStyles} from 'App/theme/colors';
 import {textStyles} from 'App/theme/textStyles';
 import {Box} from 'native-base';
 import React, {FC} from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {heightPercentageToDP, widthPercentageToDP} from 'Utils/helpers';
 import formatMoney from 'Utils/helpers/format-money';
 import Paper from '../Paper';
@@ -22,9 +24,14 @@ const ItemCart: FC<IItemCartProps> = ({
   price,
   quantity,
 }) => {
+  const navigation = useNavigation<any>();
+
   return (
     <Box style={styles.root}>
-      <View style={{borderRadius: 18, overflow: 'hidden'}}>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => navigation.navigate(NameScreen.product_detail_screen)}
+        style={{borderRadius: 18, overflow: 'hidden'}}>
         <Image
           style={{
             width: widthPercentageToDP(18),
@@ -34,7 +41,7 @@ const ItemCart: FC<IItemCartProps> = ({
             uri: img_url,
           }}
         />
-      </View>
+      </TouchableOpacity>
       <View
         style={{
           flex: 1,
