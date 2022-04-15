@@ -62,6 +62,11 @@ export function productReducer(
         message: undefined,
         error: undefined,
       };
+    case ProductsTypes.CLEAR_PRODUCTS:
+      return {
+        ...state,
+        products: {} as IResponseProductDto,
+      };
 
     default:
       return state;

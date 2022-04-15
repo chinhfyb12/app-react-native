@@ -64,6 +64,10 @@ export interface IClearMessageErrorAction {
   type: typeof ProductsTypes.CLEAR_MESSAGE_ERROR;
 }
 
+export interface IClearProductsAction {
+  type: typeof ProductsTypes.CLEAR_PRODUCTS;
+}
+
 export type ProductsActions =
   | IGetProductsRequestAction
   | IGetProductsHomeRequestAction
@@ -73,4 +77,5 @@ export type ProductsActions =
   | IClearMessageErrorAction
   | IGetDetailProductRequestAction
   | IGetDetailProductSuccessAction
-  | IGetDetailProductFailureAction;
+  | IGetDetailProductFailureAction
+  | IClearProductsAction;

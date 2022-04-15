@@ -5,7 +5,9 @@ import {IFilterProductsDto} from './products.dto';
 export function getProductsService(filterGetProductsDto: IFilterProductsDto) {
   const apiUrl = BaseUrl.dev + Endpoint.products;
 
-  const params: IFilterProductsDto = {};
+  const params: IFilterProductsDto = {
+    status: 'active',
+  };
   if (filterGetProductsDto?.description) {
     params.description = filterGetProductsDto.description;
   }
@@ -17,9 +19,6 @@ export function getProductsService(filterGetProductsDto: IFilterProductsDto) {
   }
   if (filterGetProductsDto?.product_name) {
     params.product_name = filterGetProductsDto.product_name;
-  }
-  if (filterGetProductsDto?.status) {
-    params.status = filterGetProductsDto.status;
   }
   if (filterGetProductsDto?.page) {
     params.page = filterGetProductsDto.page;

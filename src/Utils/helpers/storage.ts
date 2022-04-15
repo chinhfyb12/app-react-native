@@ -4,6 +4,7 @@ const tokenKeyName = 'token';
 const authUserKeyName = 'authUser';
 const i18nLocale = 'i18nLocale';
 const refreshTokenName = 'refresh_token';
+const productsIdName = 'productsId';
 
 const getStorageToken = async () => AsyncStorage.getItem(tokenKeyName);
 
@@ -19,6 +20,15 @@ const setStorageToken = async (token = null) => {
     AsyncStorage.removeItem(tokenKeyName);
   }
 };
+
+const setProductsId = async (productsId?: any) => {
+  if (productsId) {
+    await AsyncStorage.setItem(productsIdName, JSON.stringify(productsId));
+  } else {
+    await AsyncStorage.removeItem(productsIdName);
+  }
+};
+const getProductsId = async () => AsyncStorage.getItem(productsIdName);
 
 const getStorageRefreshToken = async () =>
   AsyncStorage.getItem(refreshTokenName);
@@ -70,4 +80,6 @@ export {
   clearStorage,
   setStorageRefreshToken,
   getStorageRefreshToken,
+  setProductsId,
+  getProductsId,
 };

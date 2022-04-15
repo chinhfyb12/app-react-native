@@ -6,6 +6,7 @@ import {
 } from './products.dto';
 import {
   IClearMessageErrorAction,
+  IClearProductsAction,
   IGetDetailProductFailureAction,
   IGetDetailProductRequestAction,
   IGetDetailProductSuccessAction,
@@ -82,5 +83,11 @@ export function getProductDetailFailure(
 export function clearMessageError(): IClearMessageErrorAction {
   return {
     type: ProductsTypes.CLEAR_MESSAGE_ERROR,
+  };
+}
+
+export function clearProducts(): IClearProductsAction {
+  return {
+    type: ProductsTypes.CLEAR_PRODUCTS,
   };
 }

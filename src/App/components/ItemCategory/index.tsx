@@ -48,6 +48,7 @@ const ItemCategory: FC<IItemCategoryProps> = ({
                 title={product.product_name}
                 img_url={product.img_url}
                 price={product.sale_price}
+                id={product._id}
               />
             ))}
         </HStack>

@@ -1,3 +1,4 @@
+import {useNavigation} from '@react-navigation/native';
 import Background2 from 'App/assets/svg-components/Background2';
 import CartIcon_2 from 'App/assets/svg-components/CartIcon_2';
 import TrashIcon from 'App/assets/svg-components/TrashIcon';
@@ -6,7 +7,7 @@ import ItemCart from 'App/components/ItemCart';
 import {ColorStyles} from 'App/theme/colors';
 import {textStyles} from 'App/theme/textStyles';
 import {VStack} from 'native-base';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Button,
   FlatList,
@@ -17,6 +18,7 @@ import {
 } from 'react-native';
 import {Swipeable} from 'react-native-gesture-handler';
 import {heightPercentageToDP, widthPercentageToDP} from 'Utils/helpers';
+import {getProductsId} from 'Utils/helpers/storage';
 
 interface CartData {
   img_url: string;
@@ -26,66 +28,24 @@ interface CartData {
 }
 
 const CartScreen = () => {
-  const tempData: CartData[] = [
-    {
-      img_url:
-        'https://tvmcomics.com.vn/wp-content/uploads/2019/11/anime-girl-ngau.jpg',
-      product_name: 'Sua chua',
-      price: 20000,
-      quantity: 2,
-    },
-    {
-      img_url:
-        'https://tvmcomics.com.vn/wp-content/uploads/2019/11/anime-girl-ngau.jpg',
-      product_name: 'Sua chua',
-      price: 20000,
-      quantity: 2,
-    },
-    {
-      img_url:
-        'https://tvmcomics.com.vn/wp-content/uploads/2019/11/anime-girl-ngau.jpg',
-      product_name: 'Sua chua',
-      price: 20000,
-      quantity: 2,
-    },
-    {
-      img_url:
-        'https://tvmcomics.com.vn/wp-content/uploads/2019/11/anime-girl-ngau.jpg',
-      product_name: 'Sua chua',
-      price: 20000,
-      quantity: 2,
-    },
-    {
-      img_url:
-        'https://tvmcomics.com.vn/wp-content/uploads/2019/11/anime-girl-ngau.jpg',
-      product_name: 'Sua chua',
-      price: 20000,
-      quantity: 2,
-    },
-    {
-      img_url:
-        'https://tvmcomics.com.vn/wp-content/uploads/2019/11/anime-girl-ngau.jpg',
-      product_name: 'Sua chua',
-      price: 20000,
-      quantity: 2,
-    },
-    {
-      img_url:
-        'https://tvmcomics.com.vn/wp-content/uploads/2019/11/anime-girl-ngau.jpg',
-      product_name: 'Sua chua',
-      price: 20000,
-      quantity: 2,
-    },
-  ];
-
-  const [listProducts, setListProducts] = useState<CartData[]>(
-    tempData.map((item: CartData, index: number) => ({
-      key: `${index}`,
-      ...item,
-    })),
-  );
+  const navigation = useNavigation();
+  const [listProducts, setListProducts] = useState<CartData[]>([]);
   let row: Array<any> = [];
   let prevOpenedRow: any;
+
+  useEffect(() => {
+    navigation.addListener('focus', () => {
+      const productsStorage = getProductsId();
+      productsStorage.then((res: any) => {
+        setListProducts(
+          JSON.parse(res).map((item: CartData, index: number) => ({
+            key: `${index}`,
+            ...item,
+          })),
+        );
+      });
+    });
+  }, [navigation]);
 
   const renderItem = ({item, index}: any, onClick: any) => {
     const closeRow = (index: any) => {
@@ -134,10 +94,10 @@ const CartScreen = () => {
   };
 
   const deleteItem = ({item, index}: any) => {
-    console.log(item, index);
-    let a = listProducts;
-    a.splice(index, 1);
-    setListProducts([...a]);
+    // console.log(item, index);
+    // let a = listProducts;
+    // a.splice(index, 1);
+    // setListProducts([...a]);
   };
 
   return (
@@ -145,6 +105,7 @@ const CartScreen = () => {
       <View style={styles.background}>
         <Background2 />
       </View>
+      {console.log(listProducts)}
       <SafeAreaView style={{flex: 1, width: '100%'}}>
         <VStack
           space={2}
@@ -158,7 +119,7 @@ const CartScreen = () => {
           <View style={{flex: 1}}>
             <FlatList
               showsVerticalScrollIndicator={false}
-              data={tempData}
+              data={listProducts}
               renderItem={v =>
                 renderItem(v, () => {
                   console.log('Pressed', v);
@@ -179,7 +140,7 @@ const CartScreen = () => {
               <ButtonCustom
                 disabled
                 icon={<CartIcon_2 width={20} height={20} />}
-                title="2"
+                title={listProducts.length.toString()}
               />
             </View>
             <View style={{flex: 1}}>

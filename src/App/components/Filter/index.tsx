@@ -1,12 +1,17 @@
 import FilterIcon from 'App/assets/svg-components/FilterIcon';
 import {ColorStyles} from 'App/theme/colors';
 import {Box, Pressable} from 'native-base';
-import React from 'react';
+import React, {FC} from 'react';
+import {GestureResponderEvent} from 'react-native';
 import {widthPercentageToDP} from 'Utils/helpers';
 
-const Filter = () => {
+interface IFilterProps {
+  onPress?: (e: GestureResponderEvent) => void;
+}
+
+const Filter: FC<IFilterProps> = ({onPress = () => {}}) => {
   return (
-    <Pressable>
+    <Pressable onPress={onPress}>
       {({isPressed}) => (
         <Box
           style={{

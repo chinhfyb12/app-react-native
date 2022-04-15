@@ -5,5 +5,6 @@
     "list_products_screen": "ListProductsScreen",
     "cart_screen": "CartScreen",
     "profile_screen": "ProfileScreen",
-    "product_detail_screen": "ProductDetailScreen"
+    "product_detail_screen": "ProductDetailScreen",
+    "list_products_search_screen": "ListProductsSearchScreen"
 }

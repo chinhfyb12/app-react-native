@@ -14,6 +14,7 @@ export enum ProductStatus {
   active = 'active',
   lock = 'lock',
 }
+export type ProductStatusTypes = 'active' | 'lock';
 
 export interface IFilterProductsDto
   extends Omit<IProductDto, '_id' | 'initial_price' | 'sale_price' | 'total'> {
@@ -26,7 +27,7 @@ export interface IFilterProductsDto
   sale_price_end?: number;
   total_start?: number;
   total_end?: number;
-  status?: ProductStatus;
+  status?: ProductStatusTypes;
 }
 
 export interface IResponseProductDto {

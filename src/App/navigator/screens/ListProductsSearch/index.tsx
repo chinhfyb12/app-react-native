@@ -5,7 +5,7 @@ import CardProduct from 'App/components/CardProduct';
 import Filter from 'App/components/Filter';
 import {ColorStyles} from 'App/theme/colors';
 import {textStyles} from 'App/theme/textStyles';
-import {VStack} from 'native-base';
+import {Center, VStack} from 'native-base';
 import React, {FC, useEffect} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -17,19 +17,17 @@ import {
 import {IAppState} from 'Utils/stores/state';
 import * as _ from 'lodash';
 import FilterModal from './FilterModal';
+import NotFound from 'App/components/NotFound';
 
-interface IListProductsProps {}
+interface IListProductsSearchProps {}
 
-const ListProducts: FC<IListProductsProps> = () => {
+const ListProductsSearch: FC<IListProductsSearchProps> = () => {
   const route = useRoute<any>();
   const dispatch = useDispatch();
 
   const {products} = useSelector((state: IAppState) => state.productsState);
 
   useEffect(() => {
-    if (route?.params?.category_id) {
-      dispatch(getProducts({parent_id: route.params.category_id}));
-    }
     return () => {
       dispatch(clearProducts());
     };
@@ -62,14 +60,20 @@ const ListProducts: FC<IListProductsProps> = () => {
                 justifyContent: 'space-between',
               }}>
               <BackBtn />
-              <FilterModal categoryId={route.params.category_id} />
+              <FilterModal
+                categoryId={route?.params?.category_id}
+                productName={route?.params?.product_name}
+              />
             </View>
           </View>
+        </VStack>
+        {_.isArray(products?.data) && products.data.length > 0 ? (
           <ScrollView showsVerticalScrollIndicator={false}>
-            <Text
-              style={[textStyles.h2_bold, {marginTop: 5, marginBottom: 15}]}>
-              {route?.params?.name}
-            </Text>
+            <Center>
+              <Text style={[textStyles.h2_bold, {marginBottom: 15}]}>
+                Kết quả tìm kiếm
+              </Text>
+            </Center>
             <View
               style={{
                 display: 'flex',
@@ -78,23 +82,24 @@ const ListProducts: FC<IListProductsProps> = () => {
                 justifyContent: 'space-between',
                 paddingBottom: heightPercentageToDP(15),
               }}>
-              {_.isArray(products?.data) &&
-                products.data.map((product, index: number) => (
-                  <CardProduct
-                    key={index}
-                    style={{
-                      width: '46%',
-                      marginBottom: heightPercentageToDP(3),
-                    }}
-                    title={product.product_name}
-                    img_url={product.img_url}
-                    price={product.sale_price}
-                    id={product._id}
-                  />
-                ))}
+              {products.data.map((product, index: number) => (
+                <CardProduct
+                  key={index}
+                  style={{
+                    width: '46%',
+                    marginBottom: heightPercentageToDP(3),
+                  }}
+                  title={product.product_name}
+                  img_url={product.img_url}
+                  price={product.sale_price}
+                  id={product._id}
+                />
+              ))}
             </View>
           </ScrollView>
-        </VStack>
+        ) : (
+          <NotFound />
+        )}
       </SafeAreaView>
     </View>
   );
@@ -115,4 +120,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ListProducts;
+export default ListProductsSearch;

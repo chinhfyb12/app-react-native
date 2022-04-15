@@ -1,3 +1,4 @@
+import {useRoute} from '@react-navigation/native';
 import Background2 from 'App/assets/svg-components/Background2';
 import PlusIcon from 'App/assets/svg-components/PlusIcon';
 import BackBtn from 'App/components/BackBtn';
@@ -7,7 +8,7 @@ import ToastCustom from 'App/components/ToastCustom';
 import {ColorStyles} from 'App/theme/colors';
 import {textStyles} from 'App/theme/textStyles';
 import {Box, Center, Pressable, useToast, VStack} from 'native-base';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   Image,
   SafeAreaView,
@@ -16,11 +17,46 @@ import {
   Text,
   View,
 } from 'react-native';
+import {getStatusBarHeight} from 'react-native-status-bar-height';
+import {useDispatch, useSelector} from 'react-redux';
 import {heightPercentageToDP, widthPercentageToDP} from 'Utils/helpers';
+import formatMoney from 'Utils/helpers/format-money';
+import {
+  clearProducts,
+  getProductDetail,
+  getProducts,
+} from 'Utils/stores/products/products.creator';
+import {IAppState} from 'Utils/stores/state';
+import * as _ from 'lodash';
 
 const ProductDetail = () => {
+  const route = useRoute<any>();
+  const dispatch = useDispatch();
   const toast = useToast();
   const id = 'toast-custom';
+
+  const {productDetail, products} = useSelector(
+    (state: IAppState) => state.productsState,
+  );
+
+  useEffect(() => {
+    if (route?.params?.id) {
+      dispatch(getProductDetail(route.params.id));
+      dispatch(clearProducts());
+    }
+  }, [route?.params?.id]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearProducts());
+    };
+  }, []);
+
+  useEffect(() => {
+    if (productDetail?.parent_id) {
+      dispatch(getProducts({parent_id: productDetail.parent_id}));
+    }
+  }, [productDetail]);
 
   return (
     <View style={styles.root}>
@@ -30,12 +66,10 @@ const ProductDetail = () => {
       <SafeAreaView style={{flex: 1, width: '100%', position: 'relative'}}>
         <View
           style={{
-            marginVertical: heightPercentageToDP(2),
-            paddingHorizontal: widthPercentageToDP(4),
             position: 'absolute',
             zIndex: 1,
-            top: widthPercentageToDP(1),
-            left: widthPercentageToDP(1),
+            top: widthPercentageToDP(4) + getStatusBarHeight(),
+            left: widthPercentageToDP(3),
           }}>
           <View
             style={{
@@ -58,7 +92,7 @@ const ProductDetail = () => {
                 aspectRatio: 1,
               }}
               source={{
-                uri: 'https://res.cloudinary.com/dvmmmv32y/image/upload/v1649910243/products/559W87TKXIJPTM0ORYMN.jpg',
+                uri: productDetail?.img_url,
               }}
             />
             <VStack
@@ -67,8 +101,12 @@ const ProductDetail = () => {
                 paddingHorizontal: widthPercentageToDP(4),
                 paddingTop: heightPercentageToDP(1),
               }}>
-              <Text style={textStyles.p_bold}>Sản phẩm 1</Text>
-              <Text style={textStyles.p}>10.000đ</Text>
+              <Text style={textStyles.p_bold}>
+                {productDetail?.product_name}
+              </Text>
+              <Text style={textStyles.p}>
+                {formatMoney(productDetail?.sale_price)}đ
+              </Text>
               <View
                 style={{
                   display: 'flex',
@@ -103,7 +141,7 @@ const ProductDetail = () => {
                     render: () => (
                       <ToastCustom
                         type="success"
-                        title="Thêm vào giỏ hàng thành công ne"
+                        title="Thêm vào giỏ hàng thành công"
                       />
                     ),
                     id,
@@ -139,21 +177,26 @@ const ProductDetail = () => {
                 display: 'flex',
                 flexDirection: 'row',
                 flexWrap: 'wrap',
-                justifyContent: 'space-between',
                 marginTop: heightPercentageToDP(2),
+                justifyContent: 'space-between',
               }}>
-              {[1, 2, 3, 4, 5].map((_, index: number) => (
-                <CardProduct
-                  key={index}
-                  style={{
-                    width: '48%',
-                    marginBottom: heightPercentageToDP(2),
-                  }}
-                  title="San pham 1"
-                  img_url="https://res.cloudinary.com/dvmmmv32y/image/upload/v1649910243/products/559W87TKXIJPTM0ORYMN.jpg"
-                  price={10000}
-                />
-              ))}
+              {_.isArray(products?.data) &&
+                products.data.map((product, index: number) => (
+                  <React.Fragment key={index}>
+                    {product._id !== productDetail?._id && (
+                      <CardProduct
+                        style={{
+                          width: '48%',
+                          marginBottom: heightPercentageToDP(2),
+                        }}
+                        title={product.product_name}
+                        img_url={product.img_url}
+                        price={product.sale_price}
+                        id={product._id}
+                      />
+                    )}
+                  </React.Fragment>
+                ))}
             </View>
           </Box>
         </ScrollView>

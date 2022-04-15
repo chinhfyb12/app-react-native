@@ -1,3 +1,6 @@
+const defaultSourceExts =
+  require('metro-config/src/defaults/defaults').sourceExts;
+
 module.exports = {
   presets: ['module:metro-react-native-babel-preset'],
   plugins: [
@@ -10,5 +13,6 @@ module.exports = {
       },
     ],
     'jest-hoist',
+    'react-native-reanimated/plugin',
   ],
 };

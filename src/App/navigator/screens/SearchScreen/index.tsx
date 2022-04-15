@@ -4,7 +4,7 @@ import InputCustom from 'App/components/Input';
 import {ColorStyles} from 'App/theme/colors';
 import {textStyles} from 'App/theme/textStyles';
 import {VStack} from 'native-base';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   Keyboard,
   SafeAreaView,
@@ -17,9 +17,25 @@ import {
 } from 'react-native';
 import {widthPercentageToDP} from 'Utils/helpers';
 import {Controller, useForm} from 'react-hook-form';
+import {useNavigation} from '@react-navigation/native';
+import {NameScreen} from 'App/constants';
+import {useDispatch} from 'react-redux';
+import {getProducts} from 'Utils/stores/products/products.creator';
 
 const SearchScreen = () => {
-  const {control, handleSubmit} = useForm();
+  const {control} = useForm();
+  const navigation = useNavigation<any>();
+  const dispatch = useDispatch();
+
+  const dataCategories = useMemo(
+    () => [
+      {value: '6241ce40b5f543ad01172c33', label: 'Đồ uống'},
+      {value: '6241ce51b5f543ad01172c35', label: 'Thực phẩm đóng hộp'},
+      {value: '6241ce5fb5f543ad01172c37', label: 'Gia vị'},
+      {value: '6241ce6bb5f543ad01172c39', label: 'Đồ dùng cá nhân'},
+    ],
+    [],
+  );
 
   return (
     <View style={styles.root}>
@@ -55,9 +71,18 @@ const SearchScreen = () => {
                       icon={<SearchIcon />}
                       placeholder="Tìm kiếm"
                       keyboardType="web-search"
-                      onChange={onChange}
+                      onChangeText={onChange}
                       value={value}
-                      onSubmitEditing={Keyboard.dismiss}
+                      onSubmitEditing={() => {
+                        Keyboard.dismiss();
+                        dispatch(getProducts({product_name: value}));
+                        navigation.navigate(
+                          NameScreen.list_products_search_screen,
+                          {
+                            product_name: value,
+                          },
+                        );
+                      }}
                     />
                   )}
                 />
@@ -65,18 +90,22 @@ const SearchScreen = () => {
               <View>
                 <Text style={textStyles.h2_bold}>Danh mục</Text>
                 <View style={styles.boxCategory}>
-                  {[
-                    'Đồ uống',
-                    'Thực phẩm đóng hộp',
-                    'Gia vị',
-                    'Đồ dùng cá nhân',
-                  ].map((item, index: number) => (
+                  {dataCategories.map((item: any, index: number) => (
                     <TouchableOpacity
                       key={index}
                       activeOpacity={0.7}
+                      onPress={() => {
+                        dispatch(getProducts({parent_id: item.value}));
+                        navigation.navigate(
+                          NameScreen.list_products_search_screen,
+                          {
+                            category_id: item.value,
+                          },
+                        );
+                      }}
                       style={styles.typoCategory}>
                       <Text style={[textStyles.p, {color: ColorStyles.orange}]}>
-                        {item}
+                        {item.label}
                       </Text>
                     </TouchableOpacity>
                   ))}
@@ -94,6 +123,15 @@ const SearchScreen = () => {
                     'Nước mắm',
                   ].map((item, index: number) => (
                     <TouchableOpacity
+                      onPress={() => {
+                        dispatch(getProducts({product_name: item}));
+                        navigation.navigate(
+                          NameScreen.list_products_search_screen,
+                          {
+                            product_name: item,
+                          },
+                        );
+                      }}
                       key={index}
                       activeOpacity={0.7}
                       style={styles.typoCategory}>
