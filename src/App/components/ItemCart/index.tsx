@@ -4,10 +4,15 @@ import {NameScreen} from 'App/constants';
 import {ColorStyles} from 'App/theme/colors';
 import {textStyles} from 'App/theme/textStyles';
 import {Box} from 'native-base';
-import React, {FC} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useDispatch} from 'react-redux';
 import {heightPercentageToDP, widthPercentageToDP} from 'Utils/helpers';
 import formatMoney from 'Utils/helpers/format-money';
+import {
+  addProductCart,
+  removeProductCart,
+} from 'Utils/stores/cart/cart.creator';
 import Paper from '../Paper';
 import ButtonCustom from './Button';
 
@@ -16,6 +21,7 @@ interface IItemCartProps {
   product_name: string;
   price: number;
   quantity: number;
+  product_id: string;
 }
 
 const ItemCart: FC<IItemCartProps> = ({
@@ -23,14 +29,49 @@ const ItemCart: FC<IItemCartProps> = ({
   product_name,
   price,
   quantity,
+  product_id,
 }) => {
   const navigation = useNavigation<any>();
+  const dispatch = useDispatch();
+  const [count, setCount] = useState<number>(1);
+
+  useEffect(() => {
+    setCount(quantity);
+  }, [quantity]);
+
+  const handleIncrease = () => {
+    setCount(prev => prev + 1);
+    dispatch(
+      addProductCart({
+        products: [
+          {
+            product_id,
+            quantity: 1,
+            price,
+            product_name,
+            img_url,
+          },
+        ],
+      }),
+    );
+  };
+
+  const handleDecrease = () => {
+    if (count > 1) {
+      setCount(prev => prev - 1);
+      dispatch(removeProductCart(product_id, 1));
+    }
+  };
 
   return (
     <Box style={styles.root}>
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={() => navigation.navigate(NameScreen.product_detail_screen)}
+        onPress={() =>
+          navigation.navigate(NameScreen.product_detail_screen, {
+            id: product_id,
+          })
+        }
         style={{borderRadius: 18, overflow: 'hidden'}}>
         <Image
           style={{
@@ -50,7 +91,15 @@ const ItemCart: FC<IItemCartProps> = ({
           justifyContent: 'space-between',
           display: 'flex',
         }}>
-        <Text style={[textStyles.p, {flex: 1}]}>{product_name}</Text>
+        <TouchableOpacity
+          style={{flex: 1}}
+          onPress={() =>
+            navigation.navigate(NameScreen.product_detail_screen, {
+              id: product_id,
+            })
+          }>
+          <Text style={[textStyles.p, {flex: 1}]}>{product_name}</Text>
+        </TouchableOpacity>
         <Text style={(textStyles.p_bold, {color: ColorStyles.primary})}>
           {formatMoney(price)}đ
         </Text>
@@ -63,13 +112,8 @@ const ItemCart: FC<IItemCartProps> = ({
           justifyContent: 'space-between',
         }}>
         <View>
-          <ButtonCustom icon={<PlusIcon />} />
-        </View>
-        <View style={{marginHorizontal: 10}}>
-          <Text style={textStyles.p_bold}>{quantity}</Text>
-        </View>
-        <View>
           <ButtonCustom
+            onPress={handleDecrease}
             icon={
               <View
                 style={{
@@ -80,6 +124,12 @@ const ItemCart: FC<IItemCartProps> = ({
               />
             }
           />
+        </View>
+        <View style={{marginHorizontal: 10}}>
+          <Text style={textStyles.p_bold}>{count}</Text>
+        </View>
+        <View>
+          <ButtonCustom onPress={handleIncrease} icon={<PlusIcon />} />
         </View>
       </View>
     </Box>

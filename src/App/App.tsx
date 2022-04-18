@@ -1,12 +1,13 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import React, {useEffect} from 'react';
+import {Platform, StyleSheet, View} from 'react-native';
 import {Provider} from 'react-redux';
 import store from 'Utils/stores';
 import {mainStack} from './navigator/MainNavigator';
 import {extendTheme, NativeBaseProvider} from 'native-base';
 import {ColorStyles} from './theme/colors';
+import KeyboardManager from 'react-native-keyboard-manager';
 
 const newColorTheme = {
   primay: ColorStyles.primary,
@@ -36,6 +37,21 @@ const config = {
 const Stack = createStackNavigator();
 
 const App = () => {
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      KeyboardManager.setEnable(true);
+      KeyboardManager.setEnableDebugging(false);
+      KeyboardManager.setKeyboardDistanceFromTextField(10);
+      KeyboardManager.setEnableAutoToolbar(false);
+      KeyboardManager.setToolbarPreviousNextButtonEnable(false);
+      KeyboardManager.setShouldShowToolbarPlaceholder(false);
+      KeyboardManager.setOverrideKeyboardAppearance(false);
+      KeyboardManager.setShouldResignOnTouchOutside(false);
+      KeyboardManager.setShouldPlayInputClicks(true);
+      KeyboardManager.resignFirstResponder();
+    }
+  }, []);
+
   return (
     <Provider store={store}>
       <NativeBaseProvider theme={theme} config={config}>

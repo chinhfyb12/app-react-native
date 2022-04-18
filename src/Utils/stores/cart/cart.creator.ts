@@ -4,6 +4,7 @@ import {
   IAddProductFailureAction,
   IAddProductRequestAction,
   IAddProductSuccessAction,
+  IClearMessageErrorAction,
   IRemoveProductFailureAction,
   IRemoveProductRequestAction,
   IRemoveProductSuccessAction,
@@ -16,7 +17,7 @@ export function addProductCart(cart: IOrderDto): IAddProductRequestAction {
   };
 }
 export function addProductCartSuccess(
-  cart: IOrderDto,
+  cart?: IOrderDto,
 ): IAddProductSuccessAction {
   return {
     type: CartTypes.ADD_PRODUCT_SUCCESS,
@@ -33,10 +34,12 @@ export function addProductCartFailure(
 }
 export function removeProductCart(
   productId: string,
+  quantity: number,
 ): IRemoveProductRequestAction {
   return {
     type: CartTypes.REMOVE_PRODUCT_REQUEST,
     productId,
+    quantity,
   };
 }
 export function removeProductCartSuccess(
@@ -53,5 +56,10 @@ export function removeProductCartFailure(
   return {
     type: CartTypes.REMOVE_PRODUCT_FAILURE,
     error,
+  };
+}
+export function clearMessageError(): IClearMessageErrorAction {
+  return {
+    type: CartTypes.CLEAR_MESSAGE_ERROR,
   };
 }

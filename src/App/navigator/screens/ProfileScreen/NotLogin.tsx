@@ -1,5 +1,7 @@
+import {useNavigation} from '@react-navigation/native';
 import Background2 from 'App/assets/svg-components/Background2';
 import BackIcon from 'App/assets/svg-components/BackIcon';
+import {NameScreen} from 'App/constants';
 import {textStyles} from 'App/theme/textStyles';
 import {Box, Divider, VStack} from 'native-base';
 import React from 'react';
@@ -8,6 +10,8 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {widthPercentageToDP} from 'Utils/helpers';
 
 const NotLogin = () => {
+  const navigation = useNavigation<any>();
+
   return (
     <View style={styles.root}>
       <View style={styles.background}>
@@ -24,7 +28,9 @@ const NotLogin = () => {
             <Text style={[textStyles.h1_bold]}>Cá nhân</Text>
           </View>
           <Box backgroundColor="#fff" borderRadius={16}>
-            <TouchableOpacity activeOpacity={0.7}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => navigation.navigate(NameScreen.login_screen)}>
               <Box
                 display="flex"
                 flexDirection="row"

@@ -17,4 +17,5 @@ export interface IProfileDto {
 export interface IProfileState {
   loading?: boolean;
   profile?: IProfileDto;
+  error?: any;
 }

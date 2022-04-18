@@ -1,6 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
 import Background from 'App/assets/svg-components/Background';
-import CardProduct from 'App/components/CardProduct';
 import ItemCategory from 'App/components/ItemCategory';
 import {NameScreen} from 'App/constants';
 import {ColorStyles} from 'App/theme/colors';
@@ -11,6 +10,7 @@ import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {heightPercentageToDP, widthPercentageToDP} from 'Utils/helpers';
 import {getProductsHome} from 'Utils/stores/products/products.creator';
+import {getProfile} from 'Utils/stores/profile/profile.creator';
 import {IAppState} from 'Utils/stores/state';
 
 const HomeScreen = () => {
@@ -21,6 +21,7 @@ const HomeScreen = () => {
 
   useEffect(() => {
     dispatch(getProductsHome());
+    dispatch(getProfile());
   }, []);
 
   return (

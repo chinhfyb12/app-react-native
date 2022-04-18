@@ -81,6 +81,7 @@ const CardProduct: FC<ICardProduct> = ({
                           quantity: 1,
                           price,
                           img_url,
+                          product_name: title,
                         },
                       ],
                     }),

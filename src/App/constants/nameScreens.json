@@ -6,5 +6,10 @@
     "cart_screen": "CartScreen",
     "profile_screen": "ProfileScreen",
     "product_detail_screen": "ProductDetailScreen",
-    "list_products_search_screen": "ListProductsSearchScreen"
+    "list_products_search_screen": "ListProductsSearchScreen",
+    "checkout_screen": "CheckoutScreen",
+    "address_screen": "AddressScreen",
+    "success_screen": "SuccessScreen",
+    "login_screen": "LoginScreen",
+    "register_screen": "RegisterScreen"
 }

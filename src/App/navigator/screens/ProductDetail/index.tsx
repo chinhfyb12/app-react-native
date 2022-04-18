@@ -8,7 +8,7 @@ import ToastCustom from 'App/components/ToastCustom';
 import {ColorStyles} from 'App/theme/colors';
 import {textStyles} from 'App/theme/textStyles';
 import {Box, Center, Pressable, useToast, VStack} from 'native-base';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   SafeAreaView,
@@ -28,12 +28,15 @@ import {
 } from 'Utils/stores/products/products.creator';
 import {IAppState} from 'Utils/stores/state';
 import * as _ from 'lodash';
+import {addProductCart} from 'Utils/stores/cart/cart.creator';
 
 const ProductDetail = () => {
   const route = useRoute<any>();
   const dispatch = useDispatch();
   const toast = useToast();
   const id = 'toast-custom';
+
+  const [quantity, setQuantity] = useState<number>(1);
 
   const {productDetail, products} = useSelector(
     (state: IAppState) => state.productsState,
@@ -57,6 +60,16 @@ const ProductDetail = () => {
       dispatch(getProducts({parent_id: productDetail.parent_id}));
     }
   }, [productDetail]);
+
+  const handleIncrease = () => {
+    setQuantity(prev => prev + 1);
+  };
+
+  const handleDecrease = () => {
+    if (quantity > 1) {
+      setQuantity(prev => prev - 1);
+    }
+  };
 
   return (
     <View style={styles.root}>
@@ -115,6 +128,7 @@ const ProductDetail = () => {
                 }}>
                 <View>
                   <ButtonCustom
+                    onPress={handleDecrease}
                     icon={
                       <View
                         style={{
@@ -127,15 +141,28 @@ const ProductDetail = () => {
                   />
                 </View>
                 <View style={{marginHorizontal: 10}}>
-                  <Text style={textStyles.p_bold}>1</Text>
+                  <Text style={textStyles.p_bold}>{quantity}</Text>
                 </View>
                 <View>
-                  <ButtonCustom icon={<PlusIcon />} />
+                  <ButtonCustom onPress={handleIncrease} icon={<PlusIcon />} />
                 </View>
               </View>
             </VStack>
             <Pressable
               onPress={() => {
+                dispatch(
+                  addProductCart({
+                    products: [
+                      {
+                        product_id: productDetail?._id || '',
+                        quantity,
+                        price: productDetail?.sale_price || 0,
+                        product_name: productDetail?.product_name || '',
+                        img_url: productDetail?.img_url || '',
+                      },
+                    ],
+                  }),
+                );
                 if (!toast.isActive(id)) {
                   toast.show({
                     render: () => (
@@ -145,6 +172,7 @@ const ProductDetail = () => {
                       />
                     ),
                     id,
+                    duration: 1000,
                   });
                 }
               }}>

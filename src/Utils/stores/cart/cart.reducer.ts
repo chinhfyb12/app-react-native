@@ -21,7 +21,7 @@ export function cartReducer(
       return {
         ...state,
         loading: false,
-        cart: action.cart,
+        cart: action?.cart,
       };
     case CartTypes.ADD_PRODUCT_FAILURE:
       return {

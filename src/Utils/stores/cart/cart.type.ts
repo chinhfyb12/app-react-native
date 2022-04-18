@@ -8,6 +8,8 @@ export enum CartTypes {
   REMOVE_PRODUCT_REQUEST = 'cart/REMOVE_PRODUCT_REQUEST',
   REMOVE_PRODUCT_SUCCESS = 'cart/REMOVE_PRODUCT_SUCCESS',
   REMOVE_PRODUCT_FAILURE = 'cart/REMOVE_PRODUCT_FAILURE',
+
+  CLEAR_MESSAGE_ERROR = 'cart/CLEAR_MESSAGE_ERROR',
 }
 
 export interface IAddProductRequestAction {
@@ -16,7 +18,7 @@ export interface IAddProductRequestAction {
 }
 export interface IAddProductSuccessAction {
   type: CartTypes.ADD_PRODUCT_SUCCESS;
-  cart: IOrderDto;
+  cart?: IOrderDto;
 }
 export interface IAddProductFailureAction {
   type: CartTypes.ADD_PRODUCT_FAILURE;
@@ -26,6 +28,7 @@ export interface IAddProductFailureAction {
 export interface IRemoveProductRequestAction {
   type: CartTypes.REMOVE_PRODUCT_REQUEST;
   productId: string;
+  quantity: number;
 }
 export interface IRemoveProductSuccessAction {
   type: CartTypes.REMOVE_PRODUCT_SUCCESS;
@@ -35,6 +38,9 @@ export interface IRemoveProductFailureAction {
   type: CartTypes.REMOVE_PRODUCT_FAILURE;
   error?: string;
 }
+export interface IClearMessageErrorAction {
+  type: CartTypes.CLEAR_MESSAGE_ERROR;
+}
 
 export type CartActionTypes =
   | IAddProductRequestAction
@@ -42,4 +48,5 @@ export type CartActionTypes =
   | IAddProductFailureAction
   | IRemoveProductRequestAction
   | IRemoveProductSuccessAction
-  | IRemoveProductFailureAction;
+  | IRemoveProductFailureAction
+  | IClearMessageErrorAction;

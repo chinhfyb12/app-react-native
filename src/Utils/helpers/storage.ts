@@ -13,7 +13,7 @@ const getStorageAuthUser = async () => {
   JSON.parse(authUser || '');
 };
 
-const setStorageToken = async (token = null) => {
+const setStorageToken = async (token: null | string) => {
   if (token) {
     AsyncStorage.setItem(tokenKeyName, token);
   } else {

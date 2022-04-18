@@ -6,7 +6,7 @@ import SelectCustom from 'App/components/SelectCustom';
 import {ColorStyles} from 'App/theme/colors';
 import {textStyles} from 'App/theme/textStyles';
 import {Box, Center, Pressable, VStack} from 'native-base';
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {
   Image,
   SafeAreaView,
@@ -15,7 +15,10 @@ import {
   Text,
   View,
 } from 'react-native';
+import {useSelector} from 'react-redux';
 import {heightPercentageToDP, widthPercentageToDP} from 'Utils/helpers';
+import {IAppState} from 'Utils/stores/state';
+import {Controller, useForm} from 'react-hook-form';
 
 interface IDataSelect {
   value: string;
@@ -23,6 +26,7 @@ interface IDataSelect {
 }
 
 const InformationScreen = () => {
+  const {profile} = useSelector((state: IAppState) => state.profileState);
   const dataGender: IDataSelect[] = useMemo(
     () => [
       {value: 'male', label: 'Nam'},
@@ -30,6 +34,22 @@ const InformationScreen = () => {
     ],
     [],
   );
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+    setValue,
+  } = useForm();
+
+  useEffect(() => {
+    if (profile) {
+      setValue('name', profile.name);
+      setValue('email', profile.email);
+      setValue('phone', profile.phone);
+      setValue('address', profile.address);
+      setValue('gender', profile.gender);
+    }
+  }, [profile]);
 
   return (
     <View style={styles.root}>
@@ -63,37 +83,83 @@ const InformationScreen = () => {
                       borderRadius: 100,
                     }}
                     source={{
-                      uri: 'https://tvmcomics.com.vn/wp-content/uploads/2019/11/anime-girl-ngau.jpg',
+                      uri: profile?.avt_url,
                     }}
                   />
                 </Center>
                 <View>
                   <Text style={[textStyles.p, {marginBottom: 5}]}>Họ tên</Text>
-                  <InputCustom />
+                  <Controller
+                    name="name"
+                    control={control}
+                    render={({field: {onChange, value}}) => (
+                      <InputCustom
+                        onChangeText={onChange}
+                        error={errors?.name && errors?.name?.message}
+                        value={value}
+                      />
+                    )}
+                  />
                 </View>
                 <View>
                   <Text style={[textStyles.p, {marginBottom: 5}]}>Email</Text>
-                  <InputCustom />
-                </View>
-                <View>
-                  <Text style={[textStyles.p, {marginBottom: 5}]}>Họ tên</Text>
-                  <InputCustom />
+                  <Controller
+                    name="email"
+                    control={control}
+                    render={({field: {onChange, value}}) => (
+                      <InputCustom
+                        onChangeText={onChange}
+                        error={errors?.email && errors?.email?.message}
+                        value={value}
+                      />
+                    )}
+                  />
                 </View>
                 <View>
                   <Text style={[textStyles.p, {marginBottom: 5}]}>
                     Số điện thoại
                   </Text>
-                  <InputCustom />
+                  <Controller
+                    name="phone"
+                    control={control}
+                    render={({field: {onChange, value}}) => (
+                      <InputCustom
+                        onChangeText={onChange}
+                        error={errors?.phone && errors?.phone?.message}
+                        value={value}
+                      />
+                    )}
+                  />
                 </View>
                 <View>
                   <Text style={[textStyles.p, {marginBottom: 5}]}>
                     Giới tính
                   </Text>
-                  <SelectCustom options={dataGender} />
+                  <Controller
+                    name="gender"
+                    control={control}
+                    render={({field: {onChange, value}}) => (
+                      <SelectCustom
+                        onValueChange={onChange}
+                        defaultValue={value}
+                        options={dataGender}
+                      />
+                    )}
+                  />
                 </View>
                 <View>
                   <Text style={[textStyles.p, {marginBottom: 5}]}>Địa chỉ</Text>
-                  <InputCustom />
+                  <Controller
+                    name="address"
+                    control={control}
+                    render={({field: {onChange, value}}) => (
+                      <InputCustom
+                        onChangeText={onChange}
+                        error={errors?.address && errors?.address?.message}
+                        value={value}
+                      />
+                    )}
+                  />
                 </View>
               </VStack>
             </Box>

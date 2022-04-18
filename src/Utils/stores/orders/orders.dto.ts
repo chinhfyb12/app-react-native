@@ -3,6 +3,7 @@ export interface IProductOrderDto {
   price: number;
   quantity: number;
   img_url?: string;
+  product_name?: string;
 }
 export enum OrderStatus {
   in_order = 'in_order',
@@ -27,4 +28,9 @@ export interface IOrderDto {
   };
   products: Array<IProductOrderDto>;
   status?: OrderTypes;
+}
+export interface IOrderState {
+  loading?: boolean;
+  error?: any;
+  message?: string;
 }

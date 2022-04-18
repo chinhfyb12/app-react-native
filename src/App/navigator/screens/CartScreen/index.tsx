@@ -4,31 +4,39 @@ import CartIcon_2 from 'App/assets/svg-components/CartIcon_2';
 import TrashIcon from 'App/assets/svg-components/TrashIcon';
 import ButtonCustom from 'App/components/Button';
 import ItemCart from 'App/components/ItemCart';
+import {NameScreen} from 'App/constants';
 import {ColorStyles} from 'App/theme/colors';
 import {textStyles} from 'App/theme/textStyles';
-import {VStack} from 'native-base';
+import {Box, Center, VStack} from 'native-base';
 import React, {useEffect, useState} from 'react';
 import {
-  Button,
   FlatList,
+  GestureResponderEvent,
   SafeAreaView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {Swipeable} from 'react-native-gesture-handler';
+import {useDispatch} from 'react-redux';
 import {heightPercentageToDP, widthPercentageToDP} from 'Utils/helpers';
 import {getProductsId} from 'Utils/helpers/storage';
+import {removeProductCart} from 'Utils/stores/cart/cart.creator';
+import * as _ from 'lodash';
 
 interface CartData {
   img_url: string;
   product_name: string;
   price: number;
   quantity: number;
+  product_id: string;
 }
 
 const CartScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
+  const dispatch = useDispatch();
+
   const [listProducts, setListProducts] = useState<CartData[]>([]);
   let row: Array<any> = [];
   let prevOpenedRow: any;
@@ -37,28 +45,31 @@ const CartScreen = () => {
     navigation.addListener('focus', () => {
       const productsStorage = getProductsId();
       productsStorage.then((res: any) => {
-        setListProducts(
-          JSON.parse(res).map((item: CartData, index: number) => ({
-            key: `${index}`,
-            ...item,
-          })),
-        );
+        if (_.isEmpty(JSON.parse(res)) || !JSON.parse(res)) {
+          setListProducts([]);
+        } else {
+          setListProducts(JSON.parse(res));
+        }
       });
     });
   }, [navigation]);
 
   const renderItem = ({item, index}: any, onClick: any) => {
     const closeRow = (index: any) => {
-      console.log('closerow');
       if (prevOpenedRow && prevOpenedRow !== row[index]) {
         prevOpenedRow.close();
       }
       prevOpenedRow = row[index];
     };
 
-    const renderRightActions = (progress: any, dragX: any, onClick: any) => {
+    const renderRightActions = (
+      _progress: any,
+      _dragX: any,
+      onClick: (e: GestureResponderEvent) => void,
+    ) => {
       return (
-        <View
+        <TouchableOpacity
+          onPress={onClick}
           style={{
             margin: 0,
             justifyContent: 'center',
@@ -72,7 +83,7 @@ const CartScreen = () => {
             borderRadius: 18,
           }}>
           <TrashIcon color={ColorStyles.danger_bold} />
-        </View>
+        </TouchableOpacity>
       );
     };
 
@@ -88,16 +99,25 @@ const CartScreen = () => {
           product_name={item.product_name}
           price={item.price}
           quantity={item.quantity}
+          product_id={item.product_id}
         />
       </Swipeable>
     );
   };
 
-  const deleteItem = ({item, index}: any) => {
-    // console.log(item, index);
-    // let a = listProducts;
-    // a.splice(index, 1);
-    // setListProducts([...a]);
+  const deleteItem = ({item, _index}: any) => {
+    dispatch(removeProductCart(item?.product_id, item?.quantity));
+
+    let arrayProducts: any = [...listProducts];
+    for (let i = 0; i < arrayProducts.length; i++) {
+      if (arrayProducts[i].product_id === item?.product_id) {
+        arrayProducts[i].quantity -= item?.quantity;
+        if (arrayProducts[i].quantity === 0) {
+          arrayProducts.splice(i, 1);
+        }
+      }
+    }
+    setListProducts([...arrayProducts]);
   };
 
   return (
@@ -105,7 +125,6 @@ const CartScreen = () => {
       <View style={styles.background}>
         <Background2 />
       </View>
-      {console.log(listProducts)}
       <SafeAreaView style={{flex: 1, width: '100%'}}>
         <VStack
           space={2}
@@ -117,17 +136,47 @@ const CartScreen = () => {
             <Text style={[textStyles.h1_bold]}>Giỏ hàng</Text>
           </View>
           <View style={{flex: 1}}>
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              data={listProducts}
-              renderItem={v =>
-                renderItem(v, () => {
-                  console.log('Pressed', v);
-                  deleteItem(v);
-                })
-              }
-              keyExtractor={(_, index) => index.toString()}
-            />
+            {listProducts?.length > 0 ? (
+              <FlatList
+                showsVerticalScrollIndicator={false}
+                data={listProducts}
+                renderItem={v =>
+                  renderItem(v, () => {
+                    deleteItem(v);
+                  })
+                }
+                keyExtractor={(item, _index) => item?.product_id}
+              />
+            ) : (
+              <Box
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: '100%',
+                }}>
+                <Center>
+                  <Box mb={3}>
+                    <CartIcon_2 color="#E8E8E8" width={197} height={96} />
+                  </Box>
+                  <Text
+                    style={[
+                      textStyles.h2_bold,
+                      {color: '#696969', marginBottom: 3},
+                    ]}>
+                    Giỏ hàng đang trống
+                  </Text>
+                  <Text
+                    style={[
+                      textStyles.p,
+                      {color: '#A9A9A9', textAlign: 'center'},
+                    ]}>
+                    Hãy trở lại trang chủ và tiếp tục mua hàng nào
+                  </Text>
+                </Center>
+              </Box>
+            )}
           </View>
           <View style={{display: 'flex', flexDirection: 'row'}}>
             <View
@@ -144,7 +193,10 @@ const CartScreen = () => {
               />
             </View>
             <View style={{flex: 1}}>
-              <ButtonCustom title="Đặt hàng" />
+              <ButtonCustom
+                onPress={() => navigation.navigate(NameScreen.checkout_screen)}
+                title="Đặt hàng"
+              />
             </View>
           </View>
         </VStack>

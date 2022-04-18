@@ -4,5 +4,5 @@ export interface ICartState {
   message?: string;
   error?: string;
   loading?: boolean;
-  cart: IOrderDto;
+  cart?: IOrderDto;
 }
