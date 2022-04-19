@@ -3,7 +3,7 @@ import PlusIcon from 'App/assets/svg-components/PlusIcon';
 import {NameScreen} from 'App/constants';
 import {textStyles} from 'App/theme/textStyles';
 import {useToast} from 'native-base';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {FC} from 'react';
 import {
   GestureResponderEvent,
@@ -13,10 +13,13 @@ import {
   ViewStyle,
 } from 'react-native';
 import {Image, Text, View} from 'react-native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {heightPercentageToDP, widthPercentageToDP} from 'Utils/helpers';
 import formatMoney from 'Utils/helpers/format-money';
 import {addProductCart} from 'Utils/stores/cart/cart.creator';
+import {createOrder} from 'Utils/stores/orders/orders.creator';
+import {OrderStatus} from 'Utils/stores/orders/orders.dto';
+import {IAppState} from 'Utils/stores/state';
 import ButtonCustom from '../Button';
 import Paper from '../Paper';
 import ToastCustom from '../ToastCustom';
@@ -40,6 +43,8 @@ const CardProduct: FC<ICardProduct> = ({
   const navigation = useNavigation<any>();
   const dispatch = useDispatch();
   const toast = useToast();
+
+  const {profile} = useSelector((state: IAppState) => state.profileState);
 
   return (
     <TouchableOpacity
@@ -73,19 +78,43 @@ const CardProduct: FC<ICardProduct> = ({
             <View style={{width: widthPercentageToDP(10)}}>
               <ButtonCustom
                 onPress={() => {
-                  dispatch(
-                    addProductCart({
-                      products: [
-                        {
-                          product_id: id,
-                          quantity: 1,
-                          price,
-                          img_url,
-                          product_name: title,
+                  if (profile) {
+                    dispatch(
+                      createOrder({
+                        products: [
+                          {
+                            product_id: id,
+                            quantity: 1,
+                            price,
+                            img_url: img_url || '',
+                            product_name: title || '',
+                          },
+                        ],
+                        customer: {
+                          address: profile.address || '',
+                          phone: profile.phone || '',
+                          name: profile.name || '',
+                          note: '',
                         },
-                      ],
-                    }),
-                  );
+                        status: OrderStatus.in_order,
+                        user_id: profile._id,
+                      }),
+                    );
+                  } else {
+                    dispatch(
+                      addProductCart({
+                        products: [
+                          {
+                            product_id: id,
+                            quantity: 1,
+                            price,
+                            img_url: img_url || '',
+                            product_name: title || '',
+                          },
+                        ],
+                      }),
+                    );
+                  }
                   toast.show({
                     render: () => (
                       <ToastCustom

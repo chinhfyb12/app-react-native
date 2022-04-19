@@ -8,6 +8,8 @@ const Endpoint = {
   profile: '/users/profile',
   products: '/products',
   orders: '/orders',
+  orders_own: '/orders/own',
+  users: '/users',
 };
 
 export {BaseUrl, Endpoint};

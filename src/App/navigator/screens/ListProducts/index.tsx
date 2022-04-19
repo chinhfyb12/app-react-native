@@ -5,7 +5,7 @@ import CardProduct from 'App/components/CardProduct';
 import Filter from 'App/components/Filter';
 import {ColorStyles} from 'App/theme/colors';
 import {textStyles} from 'App/theme/textStyles';
-import {VStack} from 'native-base';
+import {Modal, VStack} from 'native-base';
 import React, {FC, useEffect} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -17,6 +17,7 @@ import {
 import {IAppState} from 'Utils/stores/state';
 import * as _ from 'lodash';
 import FilterModal from './FilterModal';
+import Spinner from 'react-native-spinkit';
 
 interface IListProductsProps {}
 
@@ -24,7 +25,9 @@ const ListProducts: FC<IListProductsProps> = () => {
   const route = useRoute<any>();
   const dispatch = useDispatch();
 
-  const {products} = useSelector((state: IAppState) => state.productsState);
+  const {products, loading} = useSelector(
+    (state: IAppState) => state.productsState,
+  );
 
   useEffect(() => {
     if (route?.params?.category_id) {
@@ -95,6 +98,14 @@ const ListProducts: FC<IListProductsProps> = () => {
             </View>
           </ScrollView>
         </VStack>
+        <Modal isOpen={loading}>
+          <Spinner
+            isVisible
+            size={40}
+            color={ColorStyles.primary}
+            type="9CubeGrid"
+          />
+        </Modal>
       </SafeAreaView>
     </View>
   );

@@ -29,6 +29,8 @@ import {
 import {IAppState} from 'Utils/stores/state';
 import * as _ from 'lodash';
 import {addProductCart} from 'Utils/stores/cart/cart.creator';
+import {createOrder} from 'Utils/stores/orders/orders.creator';
+import {OrderStatus} from 'Utils/stores/orders/orders.dto';
 
 const ProductDetail = () => {
   const route = useRoute<any>();
@@ -41,6 +43,7 @@ const ProductDetail = () => {
   const {productDetail, products} = useSelector(
     (state: IAppState) => state.productsState,
   );
+  const {profile} = useSelector((state: IAppState) => state.profileState);
 
   useEffect(() => {
     if (route?.params?.id) {
@@ -150,19 +153,43 @@ const ProductDetail = () => {
             </VStack>
             <Pressable
               onPress={() => {
-                dispatch(
-                  addProductCart({
-                    products: [
-                      {
-                        product_id: productDetail?._id || '',
-                        quantity,
-                        price: productDetail?.sale_price || 0,
-                        product_name: productDetail?.product_name || '',
-                        img_url: productDetail?.img_url || '',
+                if (profile) {
+                  dispatch(
+                    createOrder({
+                      products: [
+                        {
+                          product_id: productDetail?._id || '',
+                          quantity,
+                          price: productDetail?.sale_price || 0,
+                          product_name: productDetail?.product_name || '',
+                          img_url: productDetail?.img_url || '',
+                        },
+                      ],
+                      customer: {
+                        address: profile.address || '',
+                        phone: profile.phone || '',
+                        name: profile.name || '',
+                        note: '',
                       },
-                    ],
-                  }),
-                );
+                      status: OrderStatus.in_order,
+                      user_id: profile._id,
+                    }),
+                  );
+                } else {
+                  dispatch(
+                    addProductCart({
+                      products: [
+                        {
+                          product_id: productDetail?._id || '',
+                          quantity,
+                          price: productDetail?.sale_price || 0,
+                          product_name: productDetail?.product_name || '',
+                          img_url: productDetail?.img_url || '',
+                        },
+                      ],
+                    }),
+                  );
+                }
                 if (!toast.isActive(id)) {
                   toast.show({
                     render: () => (

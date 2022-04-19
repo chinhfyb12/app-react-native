@@ -10,7 +10,6 @@ import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {heightPercentageToDP, widthPercentageToDP} from 'Utils/helpers';
 import {getProductsHome} from 'Utils/stores/products/products.creator';
-import {getProfile} from 'Utils/stores/profile/profile.creator';
 import {IAppState} from 'Utils/stores/state';
 
 const HomeScreen = () => {
@@ -21,7 +20,6 @@ const HomeScreen = () => {
 
   useEffect(() => {
     dispatch(getProductsHome());
-    dispatch(getProfile());
   }, []);
 
   return (

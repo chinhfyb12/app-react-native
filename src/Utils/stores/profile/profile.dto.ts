@@ -12,6 +12,7 @@ export interface IProfileDto {
   password?: string;
   avt_url?: string;
   gender?: GenderTypes;
+  _id?: string;
 }
 
 export interface IProfileState {

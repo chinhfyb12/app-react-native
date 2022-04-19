@@ -5,7 +5,7 @@ import CardProduct from 'App/components/CardProduct';
 import Filter from 'App/components/Filter';
 import {ColorStyles} from 'App/theme/colors';
 import {textStyles} from 'App/theme/textStyles';
-import {Center, VStack} from 'native-base';
+import {Center, Modal, VStack} from 'native-base';
 import React, {FC, useEffect} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -18,6 +18,7 @@ import {IAppState} from 'Utils/stores/state';
 import * as _ from 'lodash';
 import FilterModal from './FilterModal';
 import NotFound from 'App/components/NotFound';
+import Spinner from 'react-native-spinkit';
 
 interface IListProductsSearchProps {}
 
@@ -25,7 +26,9 @@ const ListProductsSearch: FC<IListProductsSearchProps> = () => {
   const route = useRoute<any>();
   const dispatch = useDispatch();
 
-  const {products} = useSelector((state: IAppState) => state.productsState);
+  const {products, loading} = useSelector(
+    (state: IAppState) => state.productsState,
+  );
 
   useEffect(() => {
     return () => {
@@ -100,6 +103,14 @@ const ListProductsSearch: FC<IListProductsSearchProps> = () => {
         ) : (
           <NotFound />
         )}
+        <Modal isOpen={loading}>
+          <Spinner
+            isVisible
+            size={40}
+            color={ColorStyles.primary}
+            type="9CubeGrid"
+          />
+        </Modal>
       </SafeAreaView>
     </View>
   );

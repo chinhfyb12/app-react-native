@@ -27,6 +27,40 @@ export function orderReducer(
         loading: false,
         error: action.error,
       };
+    case OrdersTypes.GET_ORDERS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case OrdersTypes.GET_ORDERS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        order: action.orders,
+      };
+    case OrdersTypes.GET_ORDERS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.error,
+      };
+    case OrdersTypes.CHECK_OUT_ORDER_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case OrdersTypes.CHECK_OUT_ORDER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        message: action.message,
+      };
+    case OrdersTypes.CHECK_OUT_ORDER_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.error,
+      };
     case OrdersTypes.CLEAR_MESSAGE_ERROR:
       return {
         ...state,

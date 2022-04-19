@@ -6,13 +6,16 @@ import {textStyles} from 'App/theme/textStyles';
 import {Box} from 'native-base';
 import React, {FC, useEffect, useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {heightPercentageToDP, widthPercentageToDP} from 'Utils/helpers';
 import formatMoney from 'Utils/helpers/format-money';
 import {
   addProductCart,
   removeProductCart,
 } from 'Utils/stores/cart/cart.creator';
+import {createOrder} from 'Utils/stores/orders/orders.creator';
+import {OrderStatus} from 'Utils/stores/orders/orders.dto';
+import {IAppState} from 'Utils/stores/state';
 import Paper from '../Paper';
 import ButtonCustom from './Button';
 
@@ -35,31 +38,81 @@ const ItemCart: FC<IItemCartProps> = ({
   const dispatch = useDispatch();
   const [count, setCount] = useState<number>(1);
 
+  const {profile} = useSelector((state: IAppState) => state.profileState);
+
   useEffect(() => {
     setCount(quantity);
   }, [quantity]);
 
   const handleIncrease = () => {
     setCount(prev => prev + 1);
-    dispatch(
-      addProductCart({
-        products: [
-          {
-            product_id,
-            quantity: 1,
-            price,
-            product_name,
-            img_url,
+    if (profile) {
+      dispatch(
+        createOrder({
+          products: [
+            {
+              product_id,
+              quantity: 1,
+              price,
+              img_url: img_url || '',
+              product_name,
+            },
+          ],
+          customer: {
+            address: profile.address || '',
+            phone: profile.phone || '',
+            name: profile.name || '',
+            note: '',
           },
-        ],
-      }),
-    );
+          status: OrderStatus.in_order,
+          user_id: profile._id,
+        }),
+      );
+    } else {
+      dispatch(
+        addProductCart({
+          products: [
+            {
+              product_id,
+              quantity: 1,
+              price,
+              product_name,
+              img_url,
+            },
+          ],
+        }),
+      );
+    }
   };
 
   const handleDecrease = () => {
     if (count > 1) {
       setCount(prev => prev - 1);
-      dispatch(removeProductCart(product_id, 1));
+      if (profile) {
+        dispatch(
+          createOrder({
+            products: [
+              {
+                product_id,
+                quantity: -1,
+                price,
+                img_url: img_url || '',
+                product_name,
+              },
+            ],
+            customer: {
+              address: profile.address || '',
+              phone: profile.phone || '',
+              name: profile.name || '',
+              note: '',
+            },
+            status: OrderStatus.in_order,
+            user_id: profile._id,
+          }),
+        );
+      } else {
+        dispatch(removeProductCart(product_id, 1));
+      }
     }
   };
 

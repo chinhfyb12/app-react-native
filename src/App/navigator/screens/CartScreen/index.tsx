@@ -7,7 +7,7 @@ import ItemCart from 'App/components/ItemCart';
 import {NameScreen} from 'App/constants';
 import {ColorStyles} from 'App/theme/colors';
 import {textStyles} from 'App/theme/textStyles';
-import {Box, Center, VStack} from 'native-base';
+import {Box, Center, Modal, VStack} from 'native-base';
 import React, {useEffect, useState} from 'react';
 import {
   FlatList,
@@ -19,11 +19,15 @@ import {
   View,
 } from 'react-native';
 import {Swipeable} from 'react-native-gesture-handler';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {heightPercentageToDP, widthPercentageToDP} from 'Utils/helpers';
 import {getProductsId} from 'Utils/helpers/storage';
 import {removeProductCart} from 'Utils/stores/cart/cart.creator';
 import * as _ from 'lodash';
+import {IAppState} from 'Utils/stores/state';
+import {createOrder, getOrders} from 'Utils/stores/orders/orders.creator';
+import Spinner from 'react-native-spinkit';
+import {OrderStatus} from 'Utils/stores/orders/orders.dto';
 
 interface CartData {
   img_url: string;
@@ -37,22 +41,51 @@ const CartScreen = () => {
   const navigation = useNavigation<any>();
   const dispatch = useDispatch();
 
+  const {profile} = useSelector((state: IAppState) => state.profileState);
+  const {order, loading} = useSelector((state: IAppState) => state.orderState);
+
   const [listProducts, setListProducts] = useState<CartData[]>([]);
   let row: Array<any> = [];
   let prevOpenedRow: any;
 
   useEffect(() => {
-    navigation.addListener('focus', () => {
-      const productsStorage = getProductsId();
-      productsStorage.then((res: any) => {
-        if (_.isEmpty(JSON.parse(res)) || !JSON.parse(res)) {
-          setListProducts([]);
-        } else {
-          setListProducts(JSON.parse(res));
-        }
+    if (profile) {
+      navigation.addListener('focus', () => {
+        dispatch(getOrders());
       });
-    });
+    } else {
+      navigation.addListener('focus', () => {
+        const productsStorage = getProductsId();
+        productsStorage.then((res: any) => {
+          if (_.isEmpty(JSON.parse(res)) || !JSON.parse(res)) {
+            setListProducts([]);
+          } else {
+            setListProducts(JSON.parse(res));
+          }
+        });
+      });
+    }
   }, [navigation]);
+
+  useEffect(() => {
+    if (profile) {
+      if (order?.products) {
+        let newListproducts: CartData[] = [];
+        order.products.forEach((item: any) => {
+          newListproducts.push({
+            img_url: item?.detail?.img_url,
+            product_name: item?.detail?.product_name,
+            price: item.price,
+            quantity: item.quantity,
+            product_id: item.product_id,
+          });
+        });
+        setListProducts([...newListproducts]);
+      } else {
+        setListProducts([]);
+      }
+    }
+  }, [order]);
 
   const renderItem = ({item, index}: any, onClick: any) => {
     const closeRow = (index: any) => {
@@ -106,7 +139,31 @@ const CartScreen = () => {
   };
 
   const deleteItem = ({item, _index}: any) => {
-    dispatch(removeProductCart(item?.product_id, item?.quantity));
+    if (profile) {
+      dispatch(
+        createOrder({
+          products: [
+            {
+              product_id: item?.product_id,
+              quantity: -item?.quantity,
+              price: item?.price,
+              img_url: item?.img_url || '',
+              product_name: item?.product_name || '',
+            },
+          ],
+          customer: {
+            address: profile.address || '',
+            phone: profile.email || '',
+            name: profile.name || '',
+            note: '',
+          },
+          status: OrderStatus.in_order,
+          user_id: profile._id,
+        }),
+      );
+    } else {
+      dispatch(removeProductCart(item?.product_id, item?.quantity));
+    }
 
     let arrayProducts: any = [...listProducts];
     for (let i = 0; i < arrayProducts.length; i++) {
@@ -200,6 +257,14 @@ const CartScreen = () => {
             </View>
           </View>
         </VStack>
+        <Modal isOpen={loading}>
+          <Spinner
+            isVisible
+            size={40}
+            color={ColorStyles.primary}
+            type="9CubeGrid"
+          />
+        </Modal>
       </SafeAreaView>
     </View>
   );

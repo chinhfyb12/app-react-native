@@ -29,6 +29,9 @@ export const CartStack = () => (
     <Stack.Screen
       name={NameScreen.success_screen}
       component={OrderSuccessScreen}
+      options={{
+        gestureEnabled: false,
+      }}
     />
   </Stack.Navigator>
 );

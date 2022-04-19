@@ -1,13 +1,14 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import React, {useEffect} from 'react';
-import {Platform, StyleSheet, View} from 'react-native';
-import {Provider} from 'react-redux';
-import store from 'Utils/stores';
+import {Platform, StyleSheet, Text, View} from 'react-native';
 import {mainStack} from './navigator/MainNavigator';
-import {extendTheme, NativeBaseProvider} from 'native-base';
+import {extendTheme, Modal, NativeBaseProvider} from 'native-base';
 import {ColorStyles} from './theme/colors';
 import KeyboardManager from 'react-native-keyboard-manager';
+import {useCheckToken} from './hooks/useCheckToken';
+import Spinner from 'react-native-spinkit';
+import {textStyles} from './theme/textStyles';
 
 const newColorTheme = {
   primay: ColorStyles.primary,
@@ -52,10 +53,19 @@ const App = () => {
     }
   }, []);
 
+  const {loading}: any = useCheckToken();
+
   return (
-    <Provider store={store}>
-      <NativeBaseProvider theme={theme} config={config}>
-        <View style={styles.root}>
+    <NativeBaseProvider theme={theme} config={config}>
+      <View style={styles.root}>
+        {loading ? (
+          <Modal isOpen backgroundColor={ColorStyles.primary}>
+            <Spinner isVisible size={40} color="#fff" type="9CubeGrid" />
+            <Text style={[textStyles.h2_bold, {color: '#fff', marginTop: 10}]}>
+              Supermarket Online
+            </Text>
+          </Modal>
+        ) : (
           <NavigationContainer>
             <Stack.Navigator
               screenOptions={{
@@ -64,9 +74,9 @@ const App = () => {
               <Stack.Screen name="Root" component={mainStack} />
             </Stack.Navigator>
           </NavigationContainer>
-        </View>
-      </NativeBaseProvider>
-    </Provider>
+        )}
+      </View>
+    </NativeBaseProvider>
   );
 };
 

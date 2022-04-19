@@ -3,6 +3,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {NameScreen} from 'App/constants';
 import ProfileScreen from 'App/navigator/screens/ProfileScreen';
 import LoginScreen from 'App/navigator/screens/Login';
+import RegisterScreen from 'App/navigator/screens/RegisterScreen';
 
 const Stack = createStackNavigator();
 export const ProfileStack = () => (
@@ -15,5 +16,9 @@ export const ProfileStack = () => (
     initialRouteName={NameScreen.profile_screen}>
     <Stack.Screen name={NameScreen.profile_screen} component={ProfileScreen} />
     <Stack.Screen name={NameScreen.login_screen} component={LoginScreen} />
+    <Stack.Screen
+      name={NameScreen.register_screen}
+      component={RegisterScreen}
+    />
   </Stack.Navigator>
 );

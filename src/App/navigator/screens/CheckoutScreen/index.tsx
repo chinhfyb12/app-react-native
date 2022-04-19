@@ -24,7 +24,11 @@ import Spinner from 'react-native-spinkit';
 import {IOrderDto} from 'Utils/stores/orders/orders.dto';
 import {useDispatch, useSelector} from 'react-redux';
 import {IAppState} from 'Utils/stores/state';
-import {createOrder} from 'Utils/stores/orders/orders.creator';
+import {
+  checkOutOrder,
+  createOrder,
+  getOrders,
+} from 'Utils/stores/orders/orders.creator';
 
 interface CartData {
   img_url: string;
@@ -51,20 +55,51 @@ const CheckoutScreen = () => {
   const [listProducts, setListProducts] = useState<CartData[]>([]);
   const [customer, setCustomer] = useState<Customer>({} as Customer);
 
-  const {loading, message} = useSelector(
+  const {loading, message, order} = useSelector(
     (state: IAppState) => state.orderState,
   );
+  const {profile} = useSelector((state: IAppState) => state.profileState);
 
   useEffect(() => {
-    const productsStorage = getProductsId();
-    productsStorage.then((res: any) => {
-      if (_.isEmpty(JSON.parse(res)) || !JSON.parse(res)) {
-        navigation.navigate(NameScreen.cart_screen);
-      } else {
-        setListProducts(JSON.parse(res));
-      }
-    });
-  }, []);
+    if (profile) {
+      dispatch(getOrders());
+      const info: Customer = {
+        user_id: profile._id,
+        name: profile.name || '',
+        phone: profile.phone || '',
+        address: profile.address || '',
+        note: '',
+      };
+      setCustomer(info);
+    } else {
+      const productsStorage = getProductsId();
+      productsStorage.then((res: any) => {
+        if (_.isEmpty(JSON.parse(res)) || !JSON.parse(res)) {
+          navigation.navigate(NameScreen.cart_screen);
+        } else {
+          setListProducts(JSON.parse(res));
+        }
+      });
+    }
+  }, [profile]);
+
+  useEffect(() => {
+    if (order?.products && order?.products?.length > 0) {
+      let newListproducts: CartData[] = [];
+      order.products.forEach((item: any) => {
+        newListproducts.push({
+          img_url: item?.detail?.img_url,
+          product_name: item?.detail?.product_name,
+          price: item.price,
+          quantity: item.quantity,
+          product_id: item.product_id,
+        });
+      });
+      setListProducts([...newListproducts]);
+    } else {
+      navigation.navigate(NameScreen.cart_screen);
+    }
+  }, [order]);
 
   const handleCheckout = () => {
     if (_.isEmpty(customer)) {
@@ -78,12 +113,17 @@ const CheckoutScreen = () => {
         });
       }
     } else {
-      const order: IOrderDto = {
+      const newOrder: IOrderDto = {
         customer,
         products: listProducts,
         status: 'waiting_accept',
       };
-      dispatch(createOrder(order));
+      if (profile) {
+        newOrder.user_id = profile._id;
+        order && dispatch(checkOutOrder(order._id || '', newOrder));
+      } else {
+        dispatch(createOrder(newOrder));
+      }
     }
   };
 
@@ -163,14 +203,14 @@ const CheckoutScreen = () => {
                   </Text>
                   <Text>{customer?.address}</Text>
                 </Box>
-                {customer?.note && (
+                {customer?.note ? (
                   <Box display="flex" flexDirection="row" alignItems="center">
                     <Text style={[textStyles.p_bold, {marginRight: 5}]}>
                       Ghi chú:
                     </Text>
                     <Text>{customer?.note}</Text>
                   </Box>
-                )}
+                ) : null}
               </VStack>
             )}
           </Box>

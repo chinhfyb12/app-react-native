@@ -11,7 +11,7 @@ interface ISelectCustomProps extends ISelectProps {
   options: IDataSelect[];
 }
 
-const SelectCustom: FC<ISelectCustomProps> = ({options}) => {
+const SelectCustom: FC<ISelectCustomProps> = ({options, ...props}) => {
   const [selected, setSelected] = useState<string>();
   const onChange = (value: string) => {
     setSelected(value);
@@ -24,6 +24,7 @@ const SelectCustom: FC<ISelectCustomProps> = ({options}) => {
       borderWidth={0}
       paddingTop={4}
       paddingBottom={4}
+      {...props}
       backgroundColor={ColorStyles.background_primary}>
       {options.map((item, index: number) => (
         <Select.Item key={index} label={item.label} value={item.value} />
