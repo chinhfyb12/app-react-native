@@ -10,6 +10,7 @@ const Endpoint = {
   orders: '/orders',
   orders_own: '/orders/own',
   users: '/users',
+  updatePassword: '/users/password',
 };
 
 export {BaseUrl, Endpoint};

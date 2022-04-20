@@ -11,5 +11,6 @@
     "address_screen": "AddressScreen",
     "success_screen": "SuccessScreen",
     "login_screen": "LoginScreen",
-    "register_screen": "RegisterScreen"
+    "register_screen": "RegisterScreen",
+    "change_password_screen": "ChangePasswordScreen"
 }

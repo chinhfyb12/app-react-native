@@ -1,5 +1,6 @@
-import {IProfileDto} from './profile.dto';
+import {IProfileDto, IUpdatePasswordDto} from './profile.dto';
 import {
+  IClearMessageAction,
   IClearProfileAction,
   IGetProfileFailureAction,
   IGetProfileRequestAction,
@@ -53,15 +54,20 @@ export function updateProfileFailure(
     error,
   };
 }
-export function updatePassword(password: string): IUpdatePasswordRequestAction {
+export function updatePassword(
+  pwd: IUpdatePasswordDto,
+): IUpdatePasswordRequestAction {
   return {
     type: ProfileTypes.UPDATE_PASSWORD_REQUEST,
-    password,
+    pwd,
   };
 }
-export function updatePasswordSuccess(): IUpdatePasswordSuccessAction {
+export function updatePasswordSuccess(
+  message?: string,
+): IUpdatePasswordSuccessAction {
   return {
     type: ProfileTypes.UPDATE_PASSWORD_SUCCESS,
+    message,
   };
 }
 export function updatePasswordFailure(
@@ -75,5 +81,10 @@ export function updatePasswordFailure(
 export function clearProfile(): IClearProfileAction {
   return {
     type: ProfileTypes.CLEAR_PROFILE,
+  };
+}
+export function clearMessage(): IClearMessageAction {
+  return {
+    type: ProfileTypes.CLEAR_MESSAGE,
   };
 }

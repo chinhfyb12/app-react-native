@@ -52,12 +52,19 @@ export function profileReducer(
       return {
         ...state,
         loading: false,
+        message: action?.message,
       };
     case ProfileTypes.UPDATE_PASSWORD_FAILURE:
       return {
         ...state,
         loading: false,
         error: action?.error,
+      };
+    case ProfileTypes.CLEAR_MESSAGE:
+      return {
+        ...state,
+        message: undefined,
+        error: undefined,
       };
     case ProfileTypes.CLEAR_PROFILE:
       return {

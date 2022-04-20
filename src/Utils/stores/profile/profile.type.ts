@@ -1,4 +1,4 @@
-import {IProfileDto} from './profile.dto';
+import {IProfileDto, IUpdatePasswordDto} from './profile.dto';
 
 export enum ProfileTypes {
   GET_PROFILE_REQUEST = 'profile/GET_PROFILE_REQUEST',
@@ -12,6 +12,8 @@ export enum ProfileTypes {
   UPDATE_PASSWORD_REQUEST = 'profile/UPDATE_PASSWORD_REQUEST',
   UPDATE_PASSWORD_SUCCESS = 'profile/UPDATE_PASSWORD_SUCCESS',
   UPDATE_PASSWORD_FAILURE = 'profile/UPDATE_PASSWORD_FAILURE',
+
+  CLEAR_MESSAGE = 'profile/CLEAR_MESSAGE',
 
   CLEAR_PROFILE = 'profile/CLEAR_PROFILE',
 }
@@ -41,14 +43,18 @@ export interface IUpdateProfileFailureAction {
 }
 export interface IUpdatePasswordRequestAction {
   type: ProfileTypes.UPDATE_PASSWORD_REQUEST;
-  password: string;
+  pwd: IUpdatePasswordDto;
 }
 export interface IUpdatePasswordSuccessAction {
   type: ProfileTypes.UPDATE_PASSWORD_SUCCESS;
+  message?: string;
 }
 export interface IUpdatePasswordFailureAction {
   type: ProfileTypes.UPDATE_PASSWORD_FAILURE;
   error?: string;
+}
+export interface IClearMessageAction {
+  type: ProfileTypes.CLEAR_MESSAGE;
 }
 export interface IClearProfileAction {
   type: ProfileTypes.CLEAR_PROFILE;
@@ -64,4 +70,5 @@ export type ProfileActions =
   | IUpdatePasswordRequestAction
   | IUpdatePasswordSuccessAction
   | IUpdatePasswordFailureAction
+  | IClearMessageAction
   | IClearProfileAction;

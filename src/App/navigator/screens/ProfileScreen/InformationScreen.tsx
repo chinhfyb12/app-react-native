@@ -28,6 +28,12 @@ import {
 } from 'Utils/stores/profile/profile.creator';
 import {setStorageToken} from 'Utils/helpers/storage';
 import {IProfileDto} from 'Utils/stores/profile/profile.dto';
+import {
+  ImageLibraryOptions,
+  launchImageLibrary,
+} from 'react-native-image-picker';
+import {useNavigation} from '@react-navigation/native';
+import {NameScreen} from 'App/constants';
 
 interface IDataSelect {
   value: string;
@@ -52,6 +58,7 @@ const InformationScreen = () => {
     setValue,
   } = useForm();
   const dispatch = useDispatch();
+  const navigation = useNavigation<any>();
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [previewImg, setPreviewImg] = useState<string | null>();
@@ -91,6 +98,21 @@ const InformationScreen = () => {
     dispatch(updateProfile(createUserDto));
   };
 
+  const pickImage = () => {
+    const config: ImageLibraryOptions = {
+      mediaType: 'photo',
+      includeBase64: true,
+    };
+
+    const resultFun = (event: any) => {
+      if (!event?.assets?.[0]) return;
+      setPreviewImg(
+        `data:${event?.assets?.[0].type};base64,${event?.assets?.[0].base64}`,
+      );
+    };
+    launchImageLibrary(config, resultFun);
+  };
+
   return (
     <View style={styles.root}>
       <View style={styles.background}>
@@ -116,18 +138,26 @@ const InformationScreen = () => {
               }}>
               <VStack space={2}>
                 <Center>
-                  {previewImg ? (
-                    <Image
-                      style={{
-                        width: widthPercentageToDP(28),
-                        height: widthPercentageToDP(28),
-                        borderRadius: 100,
-                      }}
-                      source={{
-                        uri: previewImg,
-                      }}
-                    />
-                  ) : null}
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={() => {
+                      isEdit && pickImage();
+                    }}>
+                    {previewImg ? (
+                      <Image
+                        style={{
+                          width: widthPercentageToDP(28),
+                          height: widthPercentageToDP(28),
+                          borderRadius: 100,
+                        }}
+                        source={{
+                          uri: previewImg,
+                        }}
+                      />
+                    ) : (
+                      <View />
+                    )}
+                  </TouchableOpacity>
                 </Center>
                 <View>
                   <Text style={[textStyles.p, {marginBottom: 5}]}>Họ tên</Text>
@@ -218,6 +248,29 @@ const InformationScreen = () => {
                 )}
               </VStack>
             </Box>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() =>
+                navigation.navigate(NameScreen.change_password_screen)
+              }>
+              <Box
+                display="flex"
+                flexDirection="row"
+                alignItems="center"
+                style={{
+                  paddingHorizontal: widthPercentageToDP(5),
+                }}
+                paddingTop={4}
+                paddingBottom={4}
+                backgroundColor="#fff"
+                borderRadius={18}
+                justifyContent="space-between">
+                <Text style={[textStyles.p]}>Thay đổi mật khẩu</Text>
+                <View style={styles.icon}>
+                  <BackIcon width={8} heigth={12} />
+                </View>
+              </Box>
+            </TouchableOpacity>
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={() => {

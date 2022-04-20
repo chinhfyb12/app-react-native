@@ -14,9 +14,14 @@ export interface IProfileDto {
   gender?: GenderTypes;
   _id?: string;
 }
+export interface IUpdatePasswordDto {
+  prev_pwd: string;
+  new_pwd: string;
+}
 
 export interface IProfileState {
   loading?: boolean;
   profile?: IProfileDto;
   error?: any;
+  message?: string;
 }

@@ -1,5 +1,5 @@
 import Background2 from 'App/assets/svg-components/Background2';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
   Image,
   Keyboard,
@@ -30,6 +30,14 @@ import {
   launchImageLibrary,
   ImageLibraryOptions,
 } from 'react-native-image-picker';
+import SelectCustom from 'App/components/SelectCustom';
+import {IProfileDto} from 'Utils/stores/profile/profile.dto';
+import {register} from 'Utils/stores/register/register.creator';
+
+interface IDataSelect {
+  value: string;
+  label: string;
+}
 
 const RegisterScreen = () => {
   const {
@@ -42,14 +50,32 @@ const RegisterScreen = () => {
   const dispatch = useDispatch();
 
   const {error, loading, user} = useSelector(
-    (state: IAppState) => state.loginState,
+    (state: IAppState) => state.registerState,
+  );
+
+  const dataGender: IDataSelect[] = useMemo(
+    () => [
+      {value: 'male', label: 'Nam'},
+      {value: 'female', label: 'Nữ'},
+    ],
+    [],
   );
 
   const [previewImg, setPreviewImg] = useState<any>(null);
 
   const onSubmit = (value: any) => {
-    Keyboard.dismiss();
-    dispatch(login(value));
+    const user: IProfileDto = {
+      name: value?.name,
+      email: value?.email,
+      phone: value?.phone,
+      password: value?.password,
+      gender: value?.gender,
+      address: value?.address,
+    };
+    if (previewImg) {
+      user.avt_url = JSON.stringify(previewImg);
+    }
+    dispatch(register(user));
   };
 
   const pickImage = () => {
@@ -148,6 +174,9 @@ const RegisterScreen = () => {
                     value={value}
                   />
                 )}
+                rules={{
+                  required: 'Họ tên không được để trống',
+                }}
               />
             </View>
             <View>
@@ -162,6 +191,13 @@ const RegisterScreen = () => {
                     value={value}
                   />
                 )}
+                rules={{
+                  pattern: {
+                    value:
+                      /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i,
+                    message: 'Email không hợp lệ',
+                  },
+                }}
               />
             </View>
             <Box>
@@ -189,6 +225,20 @@ const RegisterScreen = () => {
               />
             </Box>
             <View>
+              <Text style={[textStyles.p, {marginBottom: 5}]}>Giới tính</Text>
+              <Controller
+                name="gender"
+                control={control}
+                render={({field: {onChange, value}}) => (
+                  <SelectCustom
+                    onValueChange={onChange}
+                    selectedValue={value}
+                    options={dataGender}
+                  />
+                )}
+              />
+            </View>
+            <View>
               <Text style={[textStyles.p, {marginBottom: 5}]}>Địa chỉ</Text>
               <Controller
                 name="address"
@@ -200,6 +250,9 @@ const RegisterScreen = () => {
                     value={value}
                   />
                 )}
+                rules={{
+                  required: 'Vui lòng nhập địa chỉ',
+                }}
               />
             </View>
             <Box>

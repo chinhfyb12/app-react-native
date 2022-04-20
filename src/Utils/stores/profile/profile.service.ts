@@ -1,6 +1,6 @@
 import {BaseUrl, Endpoint} from 'App/constants/handleRequest';
 import clientRequest from 'Utils/helpers/axiosRequest';
-import {IProfileDto} from './profile.dto';
+import {IProfileDto, IUpdatePasswordDto} from './profile.dto';
 
 export function getProfileService() {
   const apiUrl = BaseUrl.dev + Endpoint.profile;
@@ -27,6 +27,24 @@ export function updateProfileService(updateDto: IProfileDto) {
       method: 'put',
       url: apiUrl,
       data: updateDto,
+    })
+      .then(response => {
+        resolve(response.data);
+      })
+      .catch(error => {
+        reject(error?.response?.data);
+      });
+  });
+}
+
+export function updatePasswordService(pwd: IUpdatePasswordDto) {
+  const apiUrl = BaseUrl.dev + Endpoint.updatePassword;
+
+  return new Promise((resolve, reject) => {
+    clientRequest({
+      method: 'put',
+      url: apiUrl,
+      data: pwd,
     })
       .then(response => {
         resolve(response.data);
