@@ -14,6 +14,7 @@ import UserIcon from 'App/assets/svg-components/UserIcon';
 import {responsiveFontWidth} from 'Utils/helpers';
 import {CartStack} from './CartStack';
 import CartIcon from 'App/assets/svg-components/CartIcon';
+import ChatScreen from '../screens/ChatScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -97,6 +98,16 @@ export const mainStack = () => (
       name={NameScreen.home_screen}
       options={{headerShown: false}}
       component={BottomTabNavigator}
+    />
+    <Stack.Screen
+      name={NameScreen.chat_screen}
+      options={{
+        headerShown: true,
+        headerTitle: 'Chats',
+        headerBackTitleVisible: false,
+        headerTintColor: '#000',
+      }}
+      component={ChatScreen}
     />
   </Stack.Navigator>
 );

@@ -1,12 +1,20 @@
 import {useNavigation} from '@react-navigation/native';
 import Background from 'App/assets/svg-components/Background';
+import ChatIcon from 'App/assets/svg-components/ChatIcon';
 import ItemCategory from 'App/components/ItemCategory';
 import {NameScreen} from 'App/constants';
 import {ColorStyles} from 'App/theme/colors';
 import {textStyles} from 'App/theme/textStyles';
 import {Box, ScrollView, VStack} from 'native-base';
 import React, {useEffect} from 'react';
-import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {heightPercentageToDP, widthPercentageToDP} from 'Utils/helpers';
 import {getProductsHome} from 'Utils/stores/products/products.creator';
@@ -32,17 +40,32 @@ const HomeScreen = () => {
           showsVerticalScrollIndicator={false}
           style={{paddingHorizontal: 8}}>
           <VStack space={8} paddingBottom={10}>
-            <View style={{marginTop: 20}}>
-              <Text
-                style={[
-                  textStyles.h1_bold,
-                  {color: ColorStyles.primary, marginBottom: 6},
-                ]}>
-                Supermarket Online
-              </Text>
-              <Text style={[textStyles.h2_bold, {color: ColorStyles.primary}]}>
-                Find your favorite food
-              </Text>
+            <View
+              style={{
+                marginTop: 20,
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              <View>
+                <Text
+                  style={[
+                    textStyles.h1_bold,
+                    {color: ColorStyles.primary, marginBottom: 6},
+                  ]}>
+                  Supermarket Online
+                </Text>
+                <Text
+                  style={[textStyles.h2_bold, {color: ColorStyles.primary}]}>
+                  Find your favorite food
+                </Text>
+              </View>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => navigation.navigate(NameScreen.chat_screen)}>
+                <ChatIcon />
+              </TouchableOpacity>
             </View>
             <Box
               display="flex"

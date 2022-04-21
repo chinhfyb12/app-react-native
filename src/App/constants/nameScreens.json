@@ -12,5 +12,6 @@
     "success_screen": "SuccessScreen",
     "login_screen": "LoginScreen",
     "register_screen": "RegisterScreen",
-    "change_password_screen": "ChangePasswordScreen"
+    "change_password_screen": "ChangePasswordScreen",
+    "chat_screen": "ChatScreen"
 }

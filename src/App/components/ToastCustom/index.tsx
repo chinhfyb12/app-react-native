@@ -2,7 +2,7 @@ import {ColorStyles} from 'App/theme/colors';
 import {textStyles} from 'App/theme/textStyles';
 import {Box, Center} from 'native-base';
 import React, {FC} from 'react';
-import {StatusBar, Text} from 'react-native';
+import {Text} from 'react-native';
 import {heightPercentageToDP, widthPercentageToDP} from 'Utils/helpers';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 
