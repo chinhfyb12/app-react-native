@@ -1,13 +1,10 @@
-import {useNavigation} from '@react-navigation/native';
 import Background2 from 'App/assets/svg-components/Background2';
-import {textStyles} from 'App/theme/textStyles';
-import {Box, Center, Modal, VStack} from 'native-base';
-import React, {useEffect, useState} from 'react';
+import {Box, Center, Modal} from 'native-base';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Dimensions,
   FlatList,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -16,345 +13,123 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {heightPercentageToDP, widthPercentageToDP} from 'Utils/helpers';
 import Spinner from 'react-native-spinkit';
-import BackIcon from 'App/assets/svg-components/BackIcon';
 import InputCustom from 'App/components/Input';
-import ButtonCustom from 'App/components/Button';
 import SendIcon from 'App/assets/svg-components/SendIcon';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {ColorStyles} from 'App/theme/colors';
-
-interface IChats {
-  _id: string;
-  sender_name?: string;
-  sender_id?: string;
-  text?: string;
-}
+import {IAppState} from 'Utils/stores/state';
+import {
+  addChatRequest,
+  clearChat,
+  getChatRequest,
+} from 'Utils/stores/chat/chat.creator';
+import {Controller, useForm} from 'react-hook-form';
+import {IChat} from 'Utils/stores/chat/chat.dto';
+import {io} from 'socket.io-client';
+import {textStyles} from 'App/theme/textStyles';
+import ButtonCustom from 'App/components/Button';
+import {useNavigation} from '@react-navigation/native';
+import {NameScreen} from 'App/constants';
 
 const ChatScreen = () => {
-  const navigation = useNavigation<any>();
   const dispatch = useDispatch();
-
+  const scrollRef = useRef<any>();
+  const {control, setValue, handleSubmit} = useForm();
   const heightScreen = Dimensions.get('window').height;
+  const navigation = useNavigation<any>();
 
-  const tempData: IChats[] = [
-    {
-      _id: '1',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'Hello',
-    },
-    {
-      _id: '2',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Hi',
-    },
-    {
-      _id: '3',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'How are you?',
-    },
-    {
-      _id: '4',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Fine',
-    },
-    {
-      _id: '5',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'Hello',
-    },
-    {
-      _id: '2',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Hi',
-    },
-    {
-      _id: '3',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'How are you?',
-    },
-    {
-      _id: '4',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Fine',
-    },
-    {
-      _id: '1',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'Hello',
-    },
-    {
-      _id: '2',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Hi',
-    },
-    {
-      _id: '3',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'How are you?',
-    },
-    {
-      _id: '4',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Fine',
-    },
-    {
-      _id: '1',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'Hello',
-    },
-    {
-      _id: '2',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Hi',
-    },
-    {
-      _id: '3',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'How are you?',
-    },
-    {
-      _id: '4',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Fine',
-    },
-    {
-      _id: '1',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'Hello',
-    },
-    {
-      _id: '2',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Hi',
-    },
-    {
-      _id: '3',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'How are you?',
-    },
-    {
-      _id: '4',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Fine',
-    },
-    {
-      _id: '1',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'Hello',
-    },
-    {
-      _id: '2',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Hi',
-    },
-    {
-      _id: '3',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'How are you?',
-    },
-    {
-      _id: '4',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Fine',
-    },
-    {
-      _id: '1',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'Hello',
-    },
-    {
-      _id: '2',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Hi',
-    },
-    {
-      _id: '3',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'How are you?',
-    },
-    {
-      _id: '4',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Fine',
-    },
-    {
-      _id: '1',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'Hello',
-    },
-    {
-      _id: '2',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Hi',
-    },
-    {
-      _id: '3',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'How are you?',
-    },
-    {
-      _id: '4',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Fine',
-    },
-    {
-      _id: '1',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'Hello',
-    },
-    {
-      _id: '2',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Hi',
-    },
-    {
-      _id: '3',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'How are you?',
-    },
-    {
-      _id: '4',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Fine',
-    },
-    {
-      _id: '1',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'Hello',
-    },
-    {
-      _id: '2',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Hi',
-    },
-    {
-      _id: '3',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'How are you?',
-    },
-    {
-      _id: '4',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Fine',
-    },
-    {
-      _id: '1',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'Hello',
-    },
-    {
-      _id: '2',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Hi',
-    },
-    {
-      _id: '3',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'How are you?',
-    },
-    {
-      _id: '4',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Fine',
-    },
-    {
-      _id: '1',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'Hello',
-    },
-    {
-      _id: '2',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Hi',
-    },
-    {
-      _id: '3',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'How are you?',
-    },
-    {
-      _id: '4',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Fine',
-    },
-    {
-      _id: '1',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'Hello',
-    },
-    {
-      _id: '2',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Hi',
-    },
-    {
-      _id: '3',
-      sender_name: 'Nguyễn Văn A',
-      sender_id: '1',
-      text: 'How are you?',
-    },
-    {
-      _id: '4',
-      sender_name: 'Nguyễn Văn B',
-      sender_id: '2',
-      text: 'Fine',
-    },
-  ];
+  const {loading, chat} = useSelector((state: IAppState) => state.chatState);
+  const {profile} = useSelector((state: IAppState) => state.profileState);
 
-  const renderItemChat = (item: IChats) => (
-    <Text style={styles.itemChat}>{item.text}</Text>
+  const [conversation, setConversation] = useState<IChat[]>([]);
+  const [arrivalMsg, setArrivalMsg] = useState<any>();
+
+  const socket = useRef<any>();
+
+  const renderItemChat = (item: IChat) => (
+    <View
+      style={[
+        styles.itemChat,
+        {
+          alignSelf:
+            item.sender_id === profile?._id ? 'flex-end' : 'flex-start',
+          backgroundColor:
+            item.sender_id === profile?._id ? ColorStyles.primary : '#f5f5f5',
+        },
+      ]}>
+      <Text style={{color: item.sender_id === profile?._id ? '#fff' : '#000'}}>
+        {item.text}
+      </Text>
+    </View>
   );
+
+  useEffect(() => {
+    dispatch(getChatRequest(profile?._id || ''));
+    return () => {
+      dispatch(clearChat());
+    };
+  }, []);
+
+  useEffect(() => {
+    setConversation(chat);
+  }, [chat]);
+
+  useEffect(() => {
+    socket.current = io('ws://localhost:8080');
+    return () => {
+      handleLeaveRoom();
+    };
+  }, []);
+
+  useEffect(() => {
+    arrivalMsg &&
+      profile?._id !== arrivalMsg?.sender_id &&
+      setConversation(prevConversations => [...prevConversations, arrivalMsg]);
+  }, [arrivalMsg, profile]);
+
+  useEffect(() => {
+    socket.current.on('getConversations', (newMsgSocket: IChat) => {
+      if (newMsgSocket) {
+        setArrivalMsg({
+          ...newMsgSocket,
+        });
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (profile?._id) {
+      let dataUser = {
+        userId: profile?._id,
+        roomId: profile?._id,
+        userName: profile.name,
+      };
+      //join and get user in room
+      socket.current.emit('addUser', dataUser);
+    }
+  }, [profile]);
+
+  const handleLeaveRoom = () => {
+    let dataUser = {
+      userId: profile?._id,
+      roomId: profile?._id,
+    };
+    socket.current.emit('leaveRoom', dataUser);
+  };
+
+  const onSendMsg = (value: any) => {
+    const chat: IChat = {
+      sender_id: profile?._id || '',
+      customer_name: profile?.name || '',
+      customer_avt: profile?.avt_url || '',
+      text: value.msg,
+      room_id: profile?._id || '',
+    };
+    dispatch(addChatRequest(chat));
+    setValue('msg', '');
+    socket.current.emit('msgToServer', chat);
+    setConversation([...conversation, chat]);
+  };
 
   return (
     <View style={styles.root}>
@@ -362,46 +137,87 @@ const ChatScreen = () => {
         <Background2 />
       </View>
       <SafeAreaView style={{flex: 1, width: '100%'}}>
-        <KeyboardAwareScrollView>
-          <Box
-            flex={1}
-            style={{height: heightScreen - getStatusBarHeight() * 3}}>
-            <Box style={{flex: 1}}>
-              <FlatList
-                data={tempData}
-                renderItem={({item}) => renderItemChat(item)}
-                keyExtractor={item => item._id}
-              />
-            </Box>
-            <Box display="flex" flexDirection="row" width="100%">
-              <Box flex={1}>
-                <InputCustom />
-              </Box>
+        {profile ? (
+          <>
+            <Box
+              flex={1}
+              style={{height: heightScreen - getStatusBarHeight() * 3}}>
               <Box
-                width={widthPercentageToDP(11)}
-                height={widthPercentageToDP(11)}>
-                <TouchableOpacity
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <SendIcon />
-                </TouchableOpacity>
+                style={{
+                  flex: 1,
+                  paddingHorizontal: widthPercentageToDP(2),
+                  paddingVertical: heightPercentageToDP(1),
+                }}>
+                <FlatList
+                  ref={ref => (scrollRef.current = ref)}
+                  showsVerticalScrollIndicator={false}
+                  data={conversation}
+                  onContentSizeChange={() =>
+                    scrollRef.current?.scrollToEnd({animated: false})
+                  }
+                  renderItem={({item}) => renderItemChat(item)}
+                  keyExtractor={(_item, index) => index.toString()}
+                  onLayout={() =>
+                    scrollRef.current?.scrollToEnd({animated: false})
+                  }
+                />
+              </Box>
+              <Box display="flex" flexDirection="row" width="100%">
+                <Box flex={1}>
+                  <Controller
+                    control={control}
+                    name="msg"
+                    render={({field: {onChange, value}}) => (
+                      <InputCustom
+                        onChangeText={onChange}
+                        value={value}
+                        placeholder="Abc"
+                      />
+                    )}
+                  />
+                </Box>
+                <Box
+                  width={widthPercentageToDP(11)}
+                  height={widthPercentageToDP(11)}>
+                  <TouchableOpacity
+                    onPress={handleSubmit(onSendMsg)}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <SendIcon />
+                  </TouchableOpacity>
+                </Box>
               </Box>
             </Box>
+            <Modal isOpen={loading}>
+              <Spinner
+                isVisible
+                size={40}
+                color={ColorStyles.primary}
+                type="9CubeGrid"
+              />
+            </Modal>
+          </>
+        ) : (
+          <Box flex={1} alignItems="center" justifyContent="center" px={4}>
+            <Center>
+              <Text style={[textStyles.p, {textAlign: 'center'}]}>
+                Bạn chưa đăng nhập. Hãy đăng nhập hoặc tạo tài khoản để bắt đầu
+                cuộc trò chuyện với chúng tôi
+              </Text>
+            </Center>
+            <Center mt={2}>
+              <ButtonCustom
+                onPress={() => navigation.navigate(NameScreen.profile_screen)}
+                title="Tiếp tục"
+              />
+            </Center>
           </Box>
-        </KeyboardAwareScrollView>
-        {/* <Modal>
-          <Spinner
-            isVisible
-            size={40}
-            color={ColorStyles.primary}
-            type="9CubeGrid"
-          />
-        </Modal> */}
+        )}
       </SafeAreaView>
     </View>
   );
@@ -421,11 +237,11 @@ const styles = StyleSheet.create({
   },
   itemChat: {
     display: 'flex',
-    paddingHorizontal: 5,
-    paddingVertical: 2,
-    borderRadius: 5,
-    backgroundColor: ColorStyles.primary,
-    width: 'fit-content',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    marginBottom: 5,
+    borderRadius: 15,
+    maxWidth: '80%',
   },
 });
 

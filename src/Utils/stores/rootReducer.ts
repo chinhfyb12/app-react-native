@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux';
 import {cartReducer} from './cart/cart.reducer';
+import {chatReducer} from './chat/chat.reducer';
 import {loginReducer} from './login/login.reducer';
 import {orderReducer} from './orders/orders.reducer';
 import {productReducer} from './products/products.reducer';
@@ -14,4 +15,5 @@ export const rootReducer = combineReducers<IAppState>({
   orderState: orderReducer,
   loginState: loginReducer,
   registerState: registerReducer,
+  chatState: chatReducer,
 });

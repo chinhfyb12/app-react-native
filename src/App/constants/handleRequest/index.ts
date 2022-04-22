@@ -11,6 +11,7 @@ const Endpoint = {
   orders_own: '/orders/own',
   users: '/users',
   updatePassword: '/users/password',
+  chats: '/chats',
 };
 
 export {BaseUrl, Endpoint};

@@ -65,7 +65,7 @@ const CartScreen = () => {
         });
       });
     }
-  }, [navigation]);
+  }, [profile]);
 
   useEffect(() => {
     if (profile) {
@@ -85,7 +85,7 @@ const CartScreen = () => {
         setListProducts([]);
       }
     }
-  }, [order]);
+  }, [order, profile]);
 
   const renderItem = ({item, index}: any, onClick: any) => {
     const closeRow = (index: any) => {

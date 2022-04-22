@@ -43,6 +43,9 @@ export function orderReducer(
         ...state,
         loading: false,
         error: action.error,
+        order: {
+          products: [],
+        },
       };
     case OrdersTypes.CHECK_OUT_ORDER_REQUEST:
       return {
