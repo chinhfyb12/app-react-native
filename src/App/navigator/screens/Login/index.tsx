@@ -1,7 +1,6 @@
 import Background2 from 'App/assets/svg-components/Background2';
 import React, {useEffect} from 'react';
 import {
-  Keyboard,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -23,6 +22,7 @@ import {ColorStyles} from 'App/theme/colors';
 import ToastCustom from 'App/components/ToastCustom';
 import {login} from 'Utils/stores/login/login.creator';
 import {NameScreen} from 'App/constants';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const LoginScreen = () => {
   const {
@@ -39,7 +39,6 @@ const LoginScreen = () => {
   );
 
   const onSubmit = (value: any) => {
-    Keyboard.dismiss();
     dispatch(login(value));
   };
 
@@ -74,54 +73,61 @@ const LoginScreen = () => {
           <BackIcon />
           <Text style={[textStyles.p, {marginLeft: 10}]}>Trở lại</Text>
         </TouchableOpacity>
-        <VStack space={4} display="flex" justifyContent="center" flex={1}>
-          <Center>
-            <Text style={textStyles.h2_bold}>Đăng nhập</Text>
-          </Center>
-          <Box>
-            <Text style={[textStyles.p, {marginBottom: 5}]}>Số điện thoại</Text>
-            <Controller
-              control={control}
-              name="phone"
-              render={({field: {onChange, value}}) => (
-                <InputCustom
-                  onChangeText={onChange}
-                  value={value}
-                  error={errors?.phone && errors?.phone?.message}
-                  keyboardType="number-pad"
-                />
-              )}
-              rules={{
-                required: 'Vui lòng nhập số điện thoại',
-                pattern: {
-                  value: /^\+?([0-9]{2})\)?[-. ]?([0-9]{4})[-. ]?([0-9]{4})$/,
-                  message: 'Nhập đúng định dạng',
-                },
-              }}
-            />
-          </Box>
-          <Box>
-            <Text style={[textStyles.p, {marginBottom: 5}]}>Mật khẩu</Text>
-            <Controller
-              control={control}
-              name="password"
-              render={({field: {onChange, value}}) => (
-                <InputCustom
-                  onChangeText={onChange}
-                  value={value}
-                  secureTextEntry
-                  error={errors?.password && errors?.password?.message}
-                />
-              )}
-              rules={{
-                required: 'Vui lòng nhập mật khẩu',
-              }}
-            />
-          </Box>
-          <Box>
-            <ButtonCustom onPress={handleSubmit(onSubmit)} title="Đăng nhập" />
-          </Box>
-        </VStack>
+        <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+          <VStack space={4} display="flex" justifyContent="center" flex={1}>
+            <Center>
+              <Text style={textStyles.h2_bold}>Đăng nhập</Text>
+            </Center>
+            <Box>
+              <Text style={[textStyles.p, {marginBottom: 5}]}>
+                Số điện thoại
+              </Text>
+              <Controller
+                control={control}
+                name="phone"
+                render={({field: {onChange, value}}) => (
+                  <InputCustom
+                    onChangeText={onChange}
+                    value={value}
+                    error={errors?.phone && errors?.phone?.message}
+                    keyboardType="number-pad"
+                  />
+                )}
+                rules={{
+                  required: 'Vui lòng nhập số điện thoại',
+                  pattern: {
+                    value: /^\+?([0-9]{2})\)?[-. ]?([0-9]{4})[-. ]?([0-9]{4})$/,
+                    message: 'Nhập đúng định dạng',
+                  },
+                }}
+              />
+            </Box>
+            <Box>
+              <Text style={[textStyles.p, {marginBottom: 5}]}>Mật khẩu</Text>
+              <Controller
+                control={control}
+                name="password"
+                render={({field: {onChange, value}}) => (
+                  <InputCustom
+                    onChangeText={onChange}
+                    value={value}
+                    secureTextEntry
+                    error={errors?.password && errors?.password?.message}
+                  />
+                )}
+                rules={{
+                  required: 'Vui lòng nhập mật khẩu',
+                }}
+              />
+            </Box>
+            <Box>
+              <ButtonCustom
+                onPress={handleSubmit(onSubmit)}
+                title="Đăng nhập"
+              />
+            </Box>
+          </VStack>
+        </KeyboardAwareScrollView>
       </SafeAreaView>
       <Modal isOpen={loading}>
         <Spinner

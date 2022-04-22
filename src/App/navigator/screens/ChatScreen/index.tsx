@@ -30,6 +30,7 @@ import {textStyles} from 'App/theme/textStyles';
 import ButtonCustom from 'App/components/Button';
 import {useNavigation} from '@react-navigation/native';
 import {NameScreen} from 'App/constants';
+import {BaseUrl} from 'App/constants/handleRequest';
 
 const ChatScreen = () => {
   const dispatch = useDispatch();
@@ -75,7 +76,7 @@ const ChatScreen = () => {
   }, [chat]);
 
   useEffect(() => {
-    socket.current = io('ws://localhost:8080');
+    socket.current = io(BaseUrl.dev);
     return () => {
       handleLeaveRoom();
     };
