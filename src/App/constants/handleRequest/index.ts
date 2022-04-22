@@ -1,5 +1,5 @@
 const BaseUrl = {
-  dev: 'http://localhost:8080',
+  dev: 'https://do-an-server-chinh.herokuapp.com',
 };
 
 const Endpoint = {
