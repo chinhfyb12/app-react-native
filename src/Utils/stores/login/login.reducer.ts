@@ -32,6 +32,11 @@ export function loginReducer(
         ...state,
         error: undefined,
       };
+    case LoginTypes.CLEAR_DATA:
+      return {
+        ...state,
+        user: undefined,
+      };
     default:
       return state;
   }

@@ -6,6 +6,7 @@ export enum LoginTypes {
   LOGIN_FAILURE = 'login/LOGIN_FAILURE',
 
   CLEAR_MESSAGE_ERROR = 'login/CLEAR_MESSAGE_ERROR',
+  CLEAR_DATA = 'login/CLEAR_DATA',
 }
 
 export interface LoginRequestAction {
@@ -23,9 +24,13 @@ export interface LoginFailureAction {
 export interface ClearMessageErrorAction {
   type: LoginTypes.CLEAR_MESSAGE_ERROR;
 }
+export interface ClearDataAction {
+  type: LoginTypes.CLEAR_DATA;
+}
 
 export type LoginActions =
   | LoginRequestAction
   | LoginSuccessAction
   | LoginFailureAction
-  | ClearMessageErrorAction;
+  | ClearMessageErrorAction
+  | ClearDataAction;

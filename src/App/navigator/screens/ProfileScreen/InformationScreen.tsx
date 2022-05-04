@@ -34,6 +34,7 @@ import {
 } from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
 import {NameScreen} from 'App/constants';
+import {clearData} from 'Utils/stores/login/login.creator';
 
 interface IDataSelect {
   value: string;
@@ -275,6 +276,7 @@ const InformationScreen = () => {
               activeOpacity={0.8}
               onPress={() => {
                 dispatch(clearProfile());
+                dispatch(clearData());
                 setStorageToken(null);
               }}>
               <Box

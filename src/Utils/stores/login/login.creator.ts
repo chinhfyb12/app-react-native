@@ -1,5 +1,6 @@
 import {ILoginDto, ILoginRequestDto} from './login.dto';
 import {
+  ClearDataAction,
   ClearMessageErrorAction,
   LoginFailureAction,
   LoginRequestAction,
@@ -28,5 +29,10 @@ export function loginFailure(error?: any): LoginFailureAction {
 export function clearMessageError(): ClearMessageErrorAction {
   return {
     type: LoginTypes.CLEAR_MESSAGE_ERROR,
+  };
+}
+export function clearData(): ClearDataAction {
+  return {
+    type: LoginTypes.CLEAR_DATA,
   };
 }

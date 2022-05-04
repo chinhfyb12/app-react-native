@@ -30,7 +30,9 @@ const NotLogin = () => {
           <Box backgroundColor="#fff" borderRadius={16}>
             <TouchableOpacity
               activeOpacity={0.7}
-              onPress={() => navigation.navigate(NameScreen.login_screen)}>
+              onPress={() => {
+                navigation.navigate(NameScreen.login_screen);
+              }}>
               <Box
                 display="flex"
                 flexDirection="row"
